@@ -1,0 +1,2057 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPI / テストセンター言語 — 学習帳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700;900&family=Klee+One:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #11100c;
+  --bg-2: #181612;
+  --surface: #1f1c16;
+  --surface-2: #2a261d;
+  --surface-3: #36302a;
+  --line: #3d362c;
+  --line-2: #524938;
+  --ink: #f2ead7;
+  --ink-soft: #c9bea0;
+  --ink-mute: #897e64;
+  --accent: #d4923a;
+  --accent-2: #e9b265;
+  --accent-soft: #62461d;
+  --crimson: #c54a3f;
+  --crimson-bg: #3a1f1c;
+  --green: #7ba350;
+  --green-bg: #1f2a18;
+  --indigo: #6580b0;
+  --gold: #d4b048;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Serif JP', 'Yu Mincho', 'Hiragino Mincho ProN', serif;
+  min-height: 100vh;
+  line-height: 1.65;
+  background-image:
+    radial-gradient(at 80% 5%, rgba(212,146,58,0.07) 0px, transparent 50%),
+    radial-gradient(at 5% 95%, rgba(197,74,63,0.04) 0px, transparent 55%);
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, select { font-family: inherit; }
+
+.app { max-width: 920px; margin: 0 auto; padding: 22px 18px 100px; }
+
+/* HEADER */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 16px; margin-bottom: 22px; gap: 16px;
+}
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.brand-mark {
+  flex-shrink: 0; width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent); color: var(--bg);
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600; font-size: 18px; border-radius: 2px;
+}
+.brand-title {
+  font-size: 18px; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap;
+}
+.brand-sub {
+  font-size: 11px; color: var(--ink-mute); letter-spacing: 0.15em;
+  font-family: 'IBM Plex Mono', monospace; text-transform: uppercase;
+}
+.header-stats {
+  display: flex; gap: 18px; font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--ink-mute);
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+.header-stats .stat-num { color: var(--accent-2); font-weight: 500; }
+
+/* HOME */
+.home-hero {
+  margin-bottom: 32px; padding: 28px 26px;
+  border: 1px solid var(--line);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%);
+  border-radius: 4px; position: relative; overflow: hidden;
+}
+.home-hero::before {
+  content: ""; position: absolute; right: -40px; top: -40px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(212,146,58,0.08), transparent 70%);
+  border-radius: 50%;
+}
+.hero-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--accent); letter-spacing: 0.2em;
+  text-transform: uppercase; margin-bottom: 10px;
+}
+.hero-title { font-size: 28px; font-weight: 700; line-height: 1.3; margin-bottom: 8px; }
+.hero-title span { color: var(--accent-2); }
+.hero-desc { color: var(--ink-soft); font-size: 14px; max-width: 540px; }
+
+.section-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; letter-spacing: 0.2em;
+  color: var(--ink-mute); text-transform: uppercase;
+  margin-bottom: 14px; display: flex; align-items: center; gap: 12px;
+}
+.section-label::after {
+  content: ""; flex: 1; height: 1px; background: var(--line);
+}
+.section-label.with-margin { margin-top: 28px; }
+
+/* Category cards */
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+.cat-card {
+  position: relative; padding: 22px 20px 20px;
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 4px; text-align: left; width: 100%;
+  transition: all 0.18s ease; overflow: hidden;
+}
+.cat-card:hover {
+  border-color: var(--accent); background: var(--surface-2);
+  transform: translateY(-1px);
+}
+.cat-card::before {
+  content: ""; position: absolute; left: 0; top: 0;
+  width: 3px; height: 100%; background: var(--accent);
+  opacity: 0.5; transition: opacity 0.2s;
+}
+.cat-card:hover::before { opacity: 1; }
+.cat-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; color: var(--ink-mute); letter-spacing: 0.15em;
+}
+.cat-name { font-size: 17px; font-weight: 600; margin: 4px 0 4px; }
+.cat-format {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--accent-2); letter-spacing: 0.1em; margin-bottom: 8px;
+}
+.cat-desc { font-size: 12px; color: var(--ink-soft); line-height: 1.55; }
+.cat-meta {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line);
+}
+.cat-count {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--accent); font-weight: 500;
+}
+.cat-accuracy {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--ink-mute);
+}
+.cat-accuracy.has-data { color: var(--green); }
+.cat-progress-bar {
+  height: 3px; background: var(--bg-2);
+  border-radius: 2px; overflow: hidden;
+  margin-top: 12px;
+}
+.cat-progress-fill {
+  height: 100%; background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+/* Mode panel */
+.mode-panel {
+  border: 1px solid var(--line); border-radius: 4px;
+  padding: 22px 24px; background: var(--surface);
+  display: none; margin: 24px 0;
+}
+.mode-panel.active { display: block; animation: fadein 0.25s; }
+@keyframes fadein { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+.mode-header {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 16px;
+}
+.mode-title { font-size: 18px; font-weight: 700; }
+.mode-back {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--ink-mute); letter-spacing: 0.1em;
+  padding: 6px 10px; border: 1px solid var(--line); border-radius: 2px;
+}
+.mode-back:hover { color: var(--accent); border-color: var(--accent); }
+
+.mode-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+.mode-tab {
+  padding: 10px 16px; font-size: 13px; font-weight: 500;
+  color: var(--ink-mute); border-bottom: 2px solid transparent;
+  margin-bottom: -1px; transition: all 0.18s;
+}
+.mode-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.mode-tab:hover { color: var(--ink); }
+.mode-tab .badge {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  margin-left: 6px; padding: 1px 6px; border-radius: 8px;
+  background: var(--crimson); color: white; font-weight: 600;
+}
+.mode-content > div { display: none; }
+.mode-content > div.active { display: block; }
+
+.random-controls { display: flex; flex-direction: column; gap: 18px; }
+.control-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.control-label {
+  font-size: 12px; color: var(--ink-mute);
+  font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.1em; text-transform: uppercase; min-width: 90px;
+}
+.count-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+.count-btn {
+  padding: 7px 14px; border: 1px solid var(--line);
+  background: var(--bg-2);
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  color: var(--ink-soft); border-radius: 2px; transition: all 0.15s;
+}
+.count-btn:hover { border-color: var(--accent-soft); }
+.count-btn.active {
+  background: var(--accent); color: var(--bg);
+  border-color: var(--accent); font-weight: 600;
+}
+
+.primary-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 13px 26px;
+  background: var(--accent); color: var(--bg);
+  font-size: 14px; font-weight: 700; letter-spacing: 0.08em;
+  border-radius: 2px; transition: all 0.15s; align-self: flex-start;
+}
+.primary-btn:hover { background: var(--accent-2); }
+.primary-btn:disabled { background: var(--surface-3); color: var(--ink-mute); cursor: not-allowed; }
+.primary-btn .arr { transition: transform 0.18s; }
+.primary-btn:not(:disabled):hover .arr { transform: translateX(3px); }
+
+/* List mode */
+.list-controls { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+.list-search {
+  flex: 1; min-width: 200px;
+  padding: 9px 12px; background: var(--bg-2);
+  border: 1px solid var(--line); color: var(--ink);
+  border-radius: 2px; font-size: 13px;
+}
+.list-search:focus { outline: none; border-color: var(--accent); }
+.list-filter {
+  padding: 9px 12px; background: var(--bg-2);
+  border: 1px solid var(--line); color: var(--ink);
+  border-radius: 2px; font-size: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.list-meta {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--ink-mute); margin-bottom: 8px;
+}
+.list-items {
+  max-height: 60vh; overflow-y: auto;
+  border: 1px solid var(--line); border-radius: 2px;
+  background: var(--bg-2);
+}
+.list-items::-webkit-scrollbar { width: 8px; }
+.list-items::-webkit-scrollbar-track { background: var(--bg-2); }
+.list-items::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 4px; }
+.list-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 11px 14px; border-bottom: 1px solid var(--line);
+  cursor: pointer; transition: background 0.12s;
+}
+.list-item:hover { background: var(--surface-2); }
+.list-item:last-child { border-bottom: none; }
+.list-item-word {
+  font-size: 17px; font-weight: 500; letter-spacing: 0.04em; color: var(--ink);
+}
+.list-item-q {
+  font-size: 13px; color: var(--ink-soft); flex: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  margin-right: 12px;
+}
+.list-item-cls {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--accent-2); letter-spacing: 0.05em;
+}
+.list-item-status {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  padding: 2px 6px; border-radius: 2px; margin-left: 8px;
+}
+.list-item-status.mistake { background: var(--crimson-bg); color: var(--crimson); }
+.list-item-status.seen { background: var(--green-bg); color: var(--green); }
+.list-item.is-seen { opacity: 0.85; }
+.list-item.is-seen::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--green);
+}
+.list-item.is-mistake::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--crimson);
+}
+.list-item { position: relative; }
+
+/* QUIZ VIEW */
+.quiz-view { display: none; }
+.quiz-view.active { display: block; }
+
+.quiz-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 18px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 4px;
+  margin-bottom: 18px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  flex-wrap: wrap; gap: 10px;
+}
+.quiz-progress { display: flex; gap: 18px; flex-wrap: wrap; }
+.quiz-progress-item { color: var(--ink-mute); letter-spacing: 0.1em; }
+.quiz-progress-item span { color: var(--accent-2); font-weight: 600; }
+.quiz-timer { color: var(--ink-soft); }
+.quiz-timer .cur { color: var(--accent); margin-left: 6px; }
+
+.progress-bar {
+  height: 3px; background: var(--surface-2);
+  border-radius: 2px; overflow: hidden; margin-bottom: 26px;
+}
+.progress-fill {
+  height: 100%; background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.question-card {
+  padding: 30px 28px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 4px; margin-bottom: 18px;
+}
+.question-num-line {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 6px;
+}
+.question-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--accent);
+  letter-spacing: 0.2em;
+}
+.seen-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; letter-spacing: 0.1em;
+  padding: 2px 8px; border-radius: 2px;
+  font-weight: 500;
+}
+.seen-badge.seen { background: var(--green-bg); color: var(--green); border: 1px solid var(--green); }
+.seen-badge.mistake { background: var(--crimson-bg); color: var(--crimson); border: 1px solid var(--crimson); }
+.question-instruction {
+  font-size: 13px; color: var(--ink-soft);
+  margin-bottom: 18px; padding-bottom: 14px;
+  border-bottom: 1px dashed var(--line);
+}
+
+.q-passage {
+  font-size: 14px; line-height: 1.85;
+  background: var(--bg-2); padding: 18px 20px;
+  border-left: 3px solid var(--accent-soft); border-radius: 2px;
+  margin-bottom: 18px;
+  max-height: 320px; overflow-y: auto;
+  color: var(--ink-soft);
+}
+.q-passage::-webkit-scrollbar { width: 6px; }
+.q-passage::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 3px; }
+.q-passage-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  color: var(--accent); letter-spacing: 0.2em;
+  margin-bottom: 8px; display: block;
+}
+
+.q-compound-word {
+  font-size: 52px; font-weight: 700;
+  letter-spacing: 0.15em; color: var(--accent-2);
+  font-family: 'Klee One', 'Noto Serif JP', serif;
+  line-height: 1.2; text-align: center;
+  margin: 18px 0 24px;
+}
+.q-text-body {
+  font-size: 16px; line-height: 1.85;
+  color: var(--ink); font-weight: 500;
+  padding: 16px 20px; background: var(--bg-2);
+  border-left: 3px solid var(--accent); border-radius: 2px;
+  margin: 18px 0 22px;
+}
+.q-text-body .blank {
+  display: inline-block;
+  padding: 1px 12px; margin: 0 1px;
+  background: var(--surface-3);
+  color: var(--accent-2); font-weight: 700;
+  border-radius: 2px; letter-spacing: 0.2em;
+  font-family: 'Klee One', sans-serif;
+}
+.q-text-body .pos {
+  display: inline-block;
+  width: 26px; height: 26px;
+  line-height: 24px; text-align: center;
+  background: transparent;
+  border: 1.5px solid var(--accent);
+  color: var(--accent); font-weight: 700;
+  border-radius: 50%; margin: 0 2px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+  vertical-align: middle;
+}
+.q-text-body .pos.target {
+  background: var(--accent); color: var(--bg);
+}
+
+.choices { display: flex; flex-direction: column; gap: 9px; }
+.choice {
+  display: flex; align-items: stretch; gap: 0;
+  padding: 0; border: 1px solid var(--line);
+  background: var(--bg-2); border-radius: 2px;
+  text-align: left; font-size: 15px;
+  transition: all 0.15s; overflow: hidden;
+}
+.choice:hover:not(:disabled) {
+  border-color: var(--accent-soft); background: var(--surface-2);
+}
+.choice-letter {
+  display: flex; align-items: center; justify-content: center;
+  width: 44px; flex-shrink: 0; background: var(--surface-2);
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600; font-size: 14px;
+  color: var(--ink-soft); border-right: 1px solid var(--line);
+}
+.choice-text {
+  flex: 1; padding: 12px 16px;
+  display: flex; align-items: center;
+}
+.choice.selected { border-color: var(--accent); background: var(--surface-2); }
+.choice.selected .choice-letter { background: var(--accent); color: var(--bg); }
+.choice.correct { border-color: var(--green); background: var(--green-bg); }
+.choice.correct .choice-letter { background: var(--green); color: white; }
+.choice.incorrect { border-color: var(--crimson); background: var(--crimson-bg); }
+.choice.incorrect .choice-letter { background: var(--crimson); color: white; }
+.choice:disabled { cursor: default; opacity: 0.85; }
+.choice.disabled-dim { opacity: 0.4; }
+.choice.partial-correct { border-color: var(--accent); background: var(--surface-2); }
+.choice.partial-correct .choice-letter { background: var(--accent); color: var(--bg); }
+
+/* Multi-select instructions */
+.multi-hint {
+  font-size: 12px; color: var(--accent-2);
+  margin-bottom: 8px; font-family: 'IBM Plex Mono', monospace;
+  letter-spacing: 0.05em;
+}
+
+.feedback {
+  margin-top: 18px; padding: 16px 18px;
+  border-radius: 2px; font-size: 13px; line-height: 1.7;
+  display: none; border-left: 3px solid;
+}
+.feedback.active { display: block; animation: fadein 0.2s; }
+.feedback.correct { background: var(--green-bg); border-left-color: var(--green); }
+.feedback.incorrect { background: var(--crimson-bg); border-left-color: var(--crimson); }
+.feedback-title {
+  font-weight: 700; margin-bottom: 4px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+  letter-spacing: 0.1em;
+}
+.feedback.correct .feedback-title { color: var(--green); }
+.feedback.incorrect .feedback-title { color: var(--crimson); }
+.feedback-body { color: var(--ink); }
+.feedback-body strong { color: var(--accent-2); }
+.feedback-body .ord-display {
+  margin-top: 10px; font-family: 'Noto Serif JP', serif;
+  font-size: 13px; color: var(--ink);
+}
+.feedback-body .ord-display .ord-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  letter-spacing: 0.1em; color: var(--ink-mute);
+  margin-bottom: 6px; text-transform: uppercase;
+}
+.feedback-body .ord-frag {
+  display: flex; align-items: flex-start; gap: 8px;
+  padding: 5px 8px; margin: 3px 0;
+  background: rgba(0,0,0,0.15); border-radius: 2px;
+  border-left: 2px solid var(--line);
+}
+.feedback-body .ord-frag.target {
+  border-left-color: var(--accent);
+  background: rgba(212,146,58,0.10);
+}
+.feedback-body .ord-frag .ord-num {
+  flex-shrink: 0;
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--accent-2); font-weight: 600;
+  min-width: 18px;
+}
+.feedback-body .ord-frag.target .ord-num { color: var(--accent); }
+
+.quiz-actions {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 14px; flex-wrap: wrap; gap: 10px;
+}
+.quiz-actions .left { display: flex; gap: 10px; }
+.action-btn {
+  padding: 11px 22px; border: 1px solid var(--line);
+  background: var(--bg-2); font-size: 13px; font-weight: 500;
+  color: var(--ink-soft); border-radius: 2px; transition: all 0.15s;
+}
+.action-btn:hover { color: var(--ink); border-color: var(--accent-soft); }
+.action-btn.primary {
+  background: var(--accent); color: var(--bg);
+  border-color: var(--accent); font-weight: 700;
+}
+.action-btn.primary:hover { background: var(--accent-2); }
+.action-btn.primary:disabled { background: var(--surface-3); color: var(--ink-mute); border-color: var(--line); cursor: not-allowed; }
+.action-btn.danger:hover { color: var(--crimson); border-color: var(--crimson); }
+
+/* RESULTS */
+.results-view { display: none; }
+.results-view.active { display: block; }
+.results-header {
+  text-align: center; padding: 30px 20px;
+  border: 1px solid var(--line);
+  background: linear-gradient(135deg, var(--surface) 0%, var(--bg-2) 100%);
+  border-radius: 4px; margin-bottom: 20px;
+  position: relative; overflow: hidden;
+}
+.results-header::before {
+  content: ""; position: absolute; inset: 0; opacity: 0.4;
+  background: radial-gradient(circle at 50% -20%, rgba(212,146,58,0.18), transparent 60%);
+}
+.results-eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px; color: var(--accent);
+  letter-spacing: 0.25em; margin-bottom: 8px; position: relative;
+}
+.results-score {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 64px; font-weight: 600; color: var(--ink);
+  line-height: 1; margin-bottom: 6px;
+  letter-spacing: 0.02em; position: relative;
+}
+.results-score .denom { color: var(--ink-mute); font-size: 0.5em; margin-left: 4px; }
+.results-pct {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px; color: var(--accent-2);
+  letter-spacing: 0.15em; position: relative;
+}
+.results-stats {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px; margin-bottom: 22px;
+}
+.result-stat {
+  padding: 14px 16px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: 2px;
+}
+.result-stat-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 10px;
+  color: var(--ink-mute); letter-spacing: 0.15em;
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.result-stat-value {
+  font-family: 'IBM Plex Mono', monospace; font-size: 22px;
+  color: var(--ink); font-weight: 500;
+}
+.result-stat-value.green { color: var(--green); }
+.result-stat-value.red { color: var(--crimson); }
+
+.mistakes-section { margin-top: 14px; }
+.mistakes-title {
+  font-size: 14px; font-weight: 600; margin-bottom: 10px;
+  color: var(--ink-soft);
+  display: flex; align-items: center; gap: 8px;
+}
+.mistakes-title .count {
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--crimson); font-size: 12px;
+}
+.mistake-card {
+  padding: 14px 16px; background: var(--surface);
+  border: 1px solid var(--line); border-left: 3px solid var(--crimson);
+  border-radius: 2px; margin-bottom: 8px;
+}
+.mistake-q {
+  font-size: 13px; color: var(--ink); margin-bottom: 6px;
+  line-height: 1.5;
+}
+.mistake-q .word {
+  font-size: 18px; font-weight: 600; color: var(--accent-2);
+  letter-spacing: 0.1em; margin-right: 8px;
+  font-family: 'Klee One', 'Noto Serif JP', serif;
+}
+.mistake-ans {
+  font-size: 12px; color: var(--ink-soft); margin-top: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+.mistake-ans .your { color: var(--crimson); }
+.mistake-ans .true { color: var(--green); }
+
+.results-actions {
+  display: flex; gap: 10px; justify-content: center;
+  margin-top: 24px; flex-wrap: wrap;
+}
+
+.empty { padding: 60px 20px; text-align: center; color: var(--ink-mute); }
+.empty-icon { font-size: 36px; color: var(--accent-soft); margin-bottom: 12px; }
+.empty-text { font-size: 13px; line-height: 1.7; }
+
+/* === Auth UI === */
+#auth-area { margin-left: 4px; }
+.auth-btn {
+  background: transparent; border: 1px solid var(--accent);
+  color: var(--accent); padding: 5px 12px; font-size: 11px;
+  letter-spacing: 0.1em; font-family: 'IBM Plex Mono', monospace;
+  border-radius: 2px; cursor: pointer; transition: all 0.15s;
+}
+.auth-btn:hover { background: var(--accent); color: var(--bg); }
+.auth-user {
+  display: flex; align-items: center; gap: 8px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+  color: var(--ink-soft);
+}
+.auth-user .user-avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--accent); color: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  cursor: pointer; border: 1px solid var(--accent);
+}
+.auth-user .sync-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--green); display: inline-block;
+  margin-left: 4px;
+}
+.auth-user .sync-dot.syncing { background: var(--accent); animation: pulse 1s infinite; }
+.auth-user .sync-dot.error { background: var(--crimson); }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  z-index: 100; display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.modal {
+  background: var(--surface); border: 1px solid var(--line);
+  border-radius: 4px; width: 100%; max-width: 400px;
+  max-height: 90vh; overflow-y: auto;
+}
+.modal-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 22px; border-bottom: 1px solid var(--line);
+}
+.modal-title {
+  font-size: 14px; letter-spacing: 0.15em; color: var(--accent);
+  font-family: 'IBM Plex Mono', monospace;
+}
+.modal-close {
+  background: transparent; border: none; color: var(--ink-mute);
+  font-size: 22px; cursor: pointer; padding: 0 4px; line-height: 1;
+}
+.modal-close:hover { color: var(--ink); }
+.modal-body { padding: 22px; }
+
+.auth-desc {
+  font-size: 12px; color: var(--ink-soft); margin: 0 0 16px;
+  line-height: 1.7;
+}
+.auth-tabs {
+  display: flex; gap: 0; margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.auth-tab {
+  flex: 1; background: transparent; border: none;
+  padding: 10px 0; font-size: 12px; color: var(--ink-mute);
+  font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.1em;
+  cursor: pointer; border-bottom: 2px solid transparent;
+  margin-bottom: -1px; transition: all 0.15s;
+}
+.auth-tab.active {
+  color: var(--accent); border-bottom-color: var(--accent);
+}
+.auth-tab:hover { color: var(--ink-soft); }
+.auth-input {
+  width: 100%; padding: 11px 12px; background: var(--bg-2);
+  border: 1px solid var(--line); color: var(--ink);
+  font-family: inherit; font-size: 13px; border-radius: 2px;
+  margin-bottom: 10px; box-sizing: border-box;
+}
+.auth-input:focus { outline: none; border-color: var(--accent); }
+.auth-submit {
+  width: 100%; padding: 11px; background: var(--accent);
+  color: var(--bg); border: 1px solid var(--accent);
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  border-radius: 2px; transition: all 0.15s; margin-top: 4px;
+}
+.auth-submit:hover { background: var(--accent-2); border-color: var(--accent-2); }
+.auth-submit:disabled { opacity: 0.6; cursor: wait; }
+.auth-link {
+  width: 100%; background: transparent; border: none;
+  color: var(--ink-mute); font-size: 11px; cursor: pointer;
+  padding: 4px; font-family: inherit;
+}
+.auth-link:hover { color: var(--accent); text-decoration: underline; }
+.auth-warn {
+  margin-top: 12px; padding: 10px;
+  background: rgba(212,146,58,0.08);
+  border-left: 2px solid var(--accent);
+  color: var(--accent); font-size: 11px;
+  line-height: 1.6; border-radius: 2px;
+}
+.auth-error {
+  margin-top: 12px; padding: 10px;
+  background: var(--crimson-bg); color: var(--crimson);
+  font-size: 12px; border-radius: 2px;
+}
+.auth-status {
+  margin-top: 12px; padding: 10px;
+  background: var(--bg-2); color: var(--ink-soft);
+  font-size: 12px; border-radius: 2px;
+}
+.signed-in-info {
+  text-align: center; padding: 8px 0 4px;
+}
+.signed-in-info .signed-email {
+  font-size: 13px; color: var(--ink); margin-bottom: 4px;
+}
+.signed-in-info .signed-sub {
+  font-size: 11px; color: var(--ink-mute);
+  font-family: 'IBM Plex Mono', monospace;
+}
+.signout-btn {
+  width: 100%; margin-top: 18px; padding: 10px;
+  background: transparent; color: var(--crimson);
+  border: 1px solid var(--crimson); font-size: 12px;
+  border-radius: 2px; cursor: pointer;
+}
+.signout-btn:hover { background: var(--crimson-bg); }
+
+@media (max-width: 600px) {
+  .header-stats { flex-wrap: wrap; }
+  #auth-area { width: 100%; margin: 6px 0 0; }
+  .auth-btn { width: 100%; padding: 8px; }
+}
+
+@media (max-width: 600px) {
+  .app { padding: 16px 12px 80px; }
+  .header { flex-wrap: wrap; gap: 10px; }
+  .header-stats { font-size: 10px; gap: 12px; }
+  .hero-title { font-size: 22px; }
+  .question-card { padding: 22px 18px; }
+  .q-compound-word { font-size: 42px; }
+  .q-text-body, .q-passage { font-size: 14px; padding: 14px 16px; }
+  .results-score { font-size: 48px; }
+  .cat-grid { grid-template-columns: 1fr; }
+  .list-item-q { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- HEADER -->
+  <header class="header">
+    <div class="brand">
+      <div class="brand-mark">言</div>
+      <div>
+        <div class="brand-title">SPI / テストセンター 言語</div>
+        <div class="brand-sub">study deck · 857 problems</div>
+      </div>
+    </div>
+    <div class="header-stats" id="header-stats">
+      <div><span class="stat-num" id="total-attempted">0</span> 回挑戦</div>
+      <div><span class="stat-num" id="overall-acc">—</span> 正答率</div>
+      <div id="auth-area">
+        <button class="auth-btn" id="signin-btn">サインイン</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay" id="auth-modal" style="display:none;">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">アカウント</div>
+        <button class="modal-close" id="auth-modal-close">×</button>
+      </div>
+      <div class="modal-body" id="auth-modal-body">
+        <p class="auth-desc">アカウントを作成すると、PCとスマホで進捗が同期されます。</p>
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-auth-mode="signin">ログイン</button>
+          <button class="auth-tab" data-auth-mode="signup">新規登録</button>
+        </div>
+        <input type="text" class="auth-input" id="auth-userid" placeholder="ユーザーID(英数字・アンダースコア)" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+        <input type="password" class="auth-input" id="auth-password" placeholder="パスワード(6文字以上)" autocomplete="current-password">
+        <button class="auth-submit primary" id="auth-submit-btn">ログイン</button>
+        <p class="auth-warn" id="auth-warn" style="display:none;">⚠ パスワードを忘れた場合、復旧できません。必ず控えてください。</p>
+        <div class="auth-error" id="auth-error" style="display:none;"></div>
+        <div class="auth-status" id="auth-status" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="view-home">
+    <section class="home-hero">
+      <div class="hero-eyebrow">SPI · TC GENGO PRACTICE</div>
+      <h1 class="hero-title">熟語、語句、長文まで<br><span>9カテゴリ857問</span>を反復演習。</h1>
+      <p class="hero-desc">SPI形式・テストセンター形式の言語分野を網羅。熟語の成り立ち、語句の意味/用法、空欄補充、文の並べ替え、長文読解 — それぞれをランダム、一覧、誤答リトライの3モードで攻略します。</p>
+    </section>
+
+    <div class="section-label">熟語・語句</div>
+    <div class="cat-grid" id="cat-grid-1"></div>
+
+    <div class="section-label with-margin">文中空欄・並び替え・長文</div>
+    <div class="cat-grid" id="cat-grid-2"></div>
+
+    <div class="mode-panel" id="mode-panel">
+      <div class="mode-header">
+        <div class="mode-title" id="mode-title">—</div>
+        <button class="mode-back" id="mode-back">← 戻る</button>
+      </div>
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-tab="random">ランダム演習</button>
+        <button class="mode-tab" data-tab="list">一覧から学習</button>
+        <button class="mode-tab" data-tab="review">復習<span class="badge" id="review-badge" style="display:none"></span></button>
+      </div>
+      <div class="mode-content">
+        <div id="tab-random" class="active">
+          <div class="random-controls">
+            <div class="control-row">
+              <div class="control-label">問題数</div>
+              <div class="count-btns" id="count-btns">
+                <button class="count-btn" data-count="5">5</button>
+                <button class="count-btn active" data-count="10">10</button>
+                <button class="count-btn" data-count="20">20</button>
+                <button class="count-btn" data-count="50">50</button>
+                <button class="count-btn" data-count="all">全問</button>
+              </div>
+            </div>
+            <button class="primary-btn" id="start-random">演習を開始 <span class="arr">→</span></button>
+          </div>
+        </div>
+        <div id="tab-list">
+          <div class="list-controls">
+            <input type="text" class="list-search" id="list-search" placeholder="検索...">
+            <select class="list-filter" id="list-filter"></select>
+            <select class="list-filter" id="list-status-filter">
+              <option value="all">すべての状態</option>
+              <option value="unseen">未着手</option>
+              <option value="seen">既出</option>
+              <option value="mistake">誤答中</option>
+            </select>
+          </div>
+          <div class="list-meta" id="list-meta"></div>
+          <div class="list-items" id="list-items"></div>
+        </div>
+        <div id="tab-review">
+          <div id="review-content"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="view-quiz" class="quiz-view">
+    <div class="quiz-header">
+      <div class="quiz-progress">
+        <div class="quiz-progress-item"><span id="quiz-pos">0</span>/<span id="quiz-total">0</span></div>
+        <div class="quiz-progress-item">正解 <span id="quiz-correct">0</span></div>
+        <div class="quiz-progress-item">誤答 <span id="quiz-wrong">0</span></div>
+      </div>
+      <div class="quiz-timer">
+        合計 <span id="quiz-total-time">0:00</span>
+        <span class="cur">+ <span id="quiz-cur-time">0.0s</span></span>
+      </div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="question-card" id="question-card"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="view-results" class="results-view">
+    <div id="results-content"></div>
+  </div>
+</div>
+
+<!-- Firebase (optional account sync) — fill in firebaseConfig below to enable -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+
+<script>// SPI/テストセンター言語問題データ
+const SPI_COMPOUNDS = [{"w": "下流", "a": "前の漢字が後の漢字を修飾"}, {"w": "下車", "a": "動詞の後に目的語"}, {"w": "下降", "a": "似た意味"}, {"w": "主従", "a": "反対の意味"}, {"w": "乗車", "a": "動詞の後に目的語"}, {"w": "乗降", "a": "反対の意味"}, {"w": "乾温", "a": "反対の意味"}, {"w": "予告", "a": "前の漢字が後の漢字を修飾"}, {"w": "互譲", "a": "前の漢字が後の漢字を修飾"}, {"w": "亜流", "a": "前の漢字が後の漢字を修飾"}, {"w": "享受", "a": "似た意味"}, {"w": "人造", "a": "主語と述語"}, {"w": "今昔", "a": "反対の意味"}, {"w": "仮病", "a": "前の漢字が後の漢字を修飾"}, {"w": "仮説", "a": "前の漢字が後の漢字を修飾"}, {"w": "伸縮", "a": "反対の意味"}, {"w": "作文", "a": "動詞の後に目的語"}, {"w": "佳作", "a": "前の漢字が後の漢字を修飾"}, {"w": "併合", "a": "似た意味"}, {"w": "供給", "a": "似た意味"}, {"w": "信託", "a": "前の漢字が後の漢字を修飾"}, {"w": "修繕", "a": "似た意味"}, {"w": "停泊", "a": "似た意味"}, {"w": "健康", "a": "似た意味"}, {"w": "側面", "a": "前の漢字が後の漢字を修飾"}, {"w": "偽造", "a": "前の漢字が後の漢字を修飾"}, {"w": "傍聴", "a": "前の漢字が後の漢字を修飾"}, {"w": "傍観", "a": "前の漢字が後の漢字を修飾"}, {"w": "傑作", "a": "前の漢字が後の漢字を修飾"}, {"w": "催促", "a": "似た意味"}, {"w": "傾斜", "a": "似た意味"}, {"w": "優良", "a": "似た意味"}, {"w": "光陰", "a": "反対の意味"}, {"w": "入会", "a": "動詞の後に目的語"}, {"w": "入学", "a": "動詞の後に目的語"}, {"w": "入門", "a": "動詞の後に目的語"}, {"w": "入院", "a": "動詞の後に目的語"}, {"w": "公営", "a": "主語と述語"}, {"w": "公私", "a": "反対の意味"}, {"w": "公設", "a": "主語と述語"}, {"w": "共同", "a": "似た意味"}, {"w": "内外", "a": "反対の意味"}, {"w": "円卓", "a": "前の漢字が後の漢字を修飾"}, {"w": "円陣", "a": "前の漢字が後の漢字を修飾"}, {"w": "再起", "a": "似た意味"}, {"w": "凝視", "a": "前の漢字が後の漢字を修飾"}, {"w": "出入", "a": "反対の意味"}, {"w": "出欠", "a": "反対の意味"}, {"w": "出納", "a": "反対の意味"}, {"w": "出荷", "a": "動詞の後に目的語"}, {"w": "出題", "a": "動詞の後に目的語"}, {"w": "分割", "a": "似た意味"}, {"w": "初雪", "a": "前の漢字が後の漢字を修飾"}, {"w": "別荘", "a": "前の漢字が後の漢字を修飾"}, {"w": "利害", "a": "反対の意味"}, {"w": "制球", "a": "動詞の後に目的語"}, {"w": "制約", "a": "似た意味"}, {"w": "制覇", "a": "似た意味"}, {"w": "剣道", "a": "前の漢字が後の漢字を修飾"}, {"w": "功罪", "a": "反対の意味"}, {"w": "加入", "a": "似た意味"}, {"w": "加減", "a": "反対の意味"}, {"w": "加熱", "a": "動詞の後に目的語"}, {"w": "加筆", "a": "動詞の後に目的語"}, {"w": "動静", "a": "反対の意味"}, {"w": "勝因", "a": "前の漢字が後の漢字を修飾"}, {"w": "勤務", "a": "似た意味"}, {"w": "匿名", "a": "動詞の後に目的語"}, {"w": "午睡", "a": "前の漢字が後の漢字を修飾"}, {"w": "卓見", "a": "前の漢字が後の漢字を修飾"}, {"w": "単複", "a": "反対の意味"}, {"w": "即位", "a": "動詞の後に目的語"}, {"w": "厳禁", "a": "前の漢字が後の漢字を修飾"}, {"w": "厳重", "a": "似た意味"}, {"w": "去就", "a": "反対の意味"}, {"w": "去年", "a": "前の漢字が後の漢字を修飾"}, {"w": "参加", "a": "前の漢字が後の漢字を修飾"}, {"w": "及第", "a": "動詞の後に目的語"}, {"w": "反映", "a": "似た意味"}, {"w": "収支", "a": "反対の意味"}, {"w": "取捨", "a": "反対の意味"}, {"w": "取材", "a": "動詞の後に目的語"}, {"w": "叙事", "a": "動詞の後に目的語"}, {"w": "可否", "a": "反対の意味"}, {"w": "史跡", "a": "似た意味"}, {"w": "名実", "a": "反対の意味"}, {"w": "告知", "a": "似た意味"}, {"w": "周囲", "a": "似た意味"}, {"w": "哀悼", "a": "似た意味"}, {"w": "哀愁", "a": "似た意味"}, {"w": "善悪", "a": "反対の意味"}, {"w": "喜劇", "a": "前の漢字が後の漢字を修飾"}, {"w": "喫茶", "a": "動詞の後に目的語"}, {"w": "噴火", "a": "動詞の後に目的語"}, {"w": "困窮", "a": "似た意味"}, {"w": "国交", "a": "主語と述語"}, {"w": "国営", "a": "主語と述語"}, {"w": "国禁", "a": "主語と述語"}, {"w": "国立", "a": "主語と述語"}, {"w": "園児", "a": "前の漢字が後の漢字を修飾"}, {"w": "圧巻", "a": "動詞の後に目的語"}, {"w": "圧迫", "a": "似た意味"}, {"w": "地異", "a": "主語と述語"}, {"w": "地震", "a": "主語と述語"}, {"w": "執務", "a": "似た意味"}, {"w": "培養", "a": "似た意味"}, {"w": "堅固", "a": "似た意味"}, {"w": "堪忍", "a": "似た意味"}, {"w": "場所", "a": "似た意味"}, {"w": "増減", "a": "反対の意味"}, {"w": "増進", "a": "似た意味"}, {"w": "墜落", "a": "似た意味"}, {"w": "壁画", "a": "前の漢字が後の漢字を修飾"}, {"w": "壮観", "a": "前の漢字が後の漢字を修飾"}, {"w": "売買", "a": "反対の意味"}, {"w": "変形", "a": "動詞の後に目的語"}, {"w": "変心", "a": "動詞の後に目的語"}, {"w": "変色", "a": "動詞の後に目的語"}, {"w": "変装", "a": "動詞の後に目的語"}, {"w": "外因", "a": "前の漢字が後の漢字を修飾"}, {"w": "外界", "a": "前の漢字が後の漢字を修飾"}, {"w": "多寡", "a": "反対の意味"}, {"w": "多少", "a": "反対の意味"}, {"w": "大海", "a": "前の漢字が後の漢字を修飾"}, {"w": "天命", "a": "前の漢字が後の漢字を修飾"}, {"w": "天地", "a": "反対の意味"}, {"w": "天罰", "a": "前の漢字が後の漢字を修飾"}, {"w": "天覧", "a": "主語と述語"}, {"w": "天誅", "a": "主語と述語"}, {"w": "天賦", "a": "主語と述語"}, {"w": "失意", "a": "動詞の後に目的語"}, {"w": "失格", "a": "動詞の後に目的語"}, {"w": "失礼", "a": "前の漢字が後の漢字を修飾"}, {"w": "失脚", "a": "動詞の後に目的語"}, {"w": "失速", "a": "動詞の後に目的語"}, {"w": "奨励", "a": "似た意味"}, {"w": "好漢", "a": "前の漢字が後の漢字を修飾"}, {"w": "始業", "a": "動詞の後に目的語"}, {"w": "委曲", "a": "似た意味"}, {"w": "威嚇", "a": "前の漢字が後の漢字を修飾"}, {"w": "媒介", "a": "似た意味"}, {"w": "字典", "a": "前の漢字が後の漢字を修飾"}, {"w": "存亡", "a": "反対の意味"}, {"w": "存在", "a": "似た意味"}, {"w": "学習", "a": "似た意味"}, {"w": "安危", "a": "反対の意味"}, {"w": "安泰", "a": "似た意味"}, {"w": "完全", "a": "似た意味"}, {"w": "完成", "a": "前の漢字が後の漢字を修飾"}, {"w": "定型", "a": "前の漢字が後の漢字を修飾"}, {"w": "実感", "a": "前の漢字が後の漢字を修飾"}, {"w": "宣伝", "a": "似た意味"}, {"w": "家屋", "a": "似た意味"}, {"w": "家財", "a": "前の漢字が後の漢字を修飾"}, {"w": "寒村", "a": "前の漢字が後の漢字を修飾"}, {"w": "寸暇", "a": "前の漢字が後の漢字を修飾"}, {"w": "尊敬", "a": "似た意味"}, {"w": "尊重", "a": "似た意味"}, {"w": "少量", "a": "前の漢字が後の漢字を修飾"}, {"w": "尽力", "a": "動詞の後に目的語"}, {"w": "屈伸", "a": "反対の意味"}, {"w": "屈折", "a": "似た意味"}, {"w": "山頂", "a": "前の漢字が後の漢字を修飾"}, {"w": "崇高", "a": "似た意味"}, {"w": "巡回", "a": "似た意味"}, {"w": "左右", "a": "反対の意味"}, {"w": "巧拙", "a": "反対の意味"}, {"w": "差額", "a": "前の漢字が後の漢字を修飾"}, {"w": "市営", "a": "主語と述語"}, {"w": "帰結", "a": "似た意味"}, {"w": "帳簿", "a": "似た意味"}, {"w": "干満", "a": "反対の意味"}, {"w": "平均", "a": "似た意味"}, {"w": "年長", "a": "主語と述語"}, {"w": "年齢", "a": "似た意味"}, {"w": "幸福", "a": "似た意味"}, {"w": "幹線", "a": "前の漢字が後の漢字を修飾"}, {"w": "幼虫", "a": "前の漢字が後の漢字を修飾"}, {"w": "廃屋", "a": "前の漢字が後の漢字を修飾"}, {"w": "廉価", "a": "前の漢字が後の漢字を修飾"}, {"w": "延命", "a": "動詞の後に目的語"}, {"w": "延期", "a": "動詞の後に目的語"}, {"w": "建築", "a": "似た意味"}, {"w": "建設", "a": "似た意味"}, {"w": "弱点", "a": "前の漢字が後の漢字を修飾"}, {"w": "強弱", "a": "反対の意味"}, {"w": "強敵", "a": "前の漢字が後の漢字を修飾"}, {"w": "当落", "a": "反対の意味"}, {"w": "彼我", "a": "反対の意味"}, {"w": "往復", "a": "反対の意味"}, {"w": "往来", "a": "反対の意味"}, {"w": "往還", "a": "反対の意味"}, {"w": "後悔", "a": "前の漢字が後の漢字を修飾"}, {"w": "得失", "a": "反対の意味"}, {"w": "循環", "a": "似た意味"}, {"w": "微動", "a": "前の漢字が後の漢字を修飾"}, {"w": "徹夜", "a": "動詞の後に目的語"}, {"w": "心病", "a": "主語と述語"}, {"w": "心痛", "a": "主語と述語"}, {"w": "快晴", "a": "前の漢字が後の漢字を修飾"}, {"w": "怠惰", "a": "似た意味"}, {"w": "急病", "a": "前の漢字が後の漢字を修飾"}, {"w": "恩師", "a": "前の漢字が後の漢字を修飾"}, {"w": "悪弊", "a": "似た意味"}, {"w": "悪漢", "a": "前の漢字が後の漢字を修飾"}, {"w": "悲哀", "a": "似た意味"}, {"w": "悲喜", "a": "反対の意味"}, {"w": "悲惨", "a": "似た意味"}, {"w": "惨劇", "a": "前の漢字が後の漢字を修飾"}, {"w": "惰性", "a": "前の漢字が後の漢字を修飾"}, {"w": "慈雨", "a": "前の漢字が後の漢字を修飾"}, {"w": "慎重", "a": "動詞の後に目的語"}, {"w": "慰労", "a": "動詞の後に目的語"}, {"w": "慶弔", "a": "反対の意味"}, {"w": "慶忌", "a": "反対の意味"}, {"w": "憶測", "a": "似た意味"}, {"w": "懐古", "a": "動詞の後に目的語"}, {"w": "成功", "a": "動詞の後に目的語"}, {"w": "我流", "a": "前の漢字が後の漢字を修飾"}, {"w": "戦争", "a": "似た意味"}, {"w": "手腕", "a": "似た意味"}, {"w": "抑揚", "a": "反対の意味"}, {"w": "投書", "a": "動詞の後に目的語"}, {"w": "投票", "a": "動詞の後に目的語"}, {"w": "投薬", "a": "動詞の後に目的語"}, {"w": "投資", "a": "動詞の後に目的語"}, {"w": "披露", "a": "似た意味"}, {"w": "抵触", "a": "似た意味"}, {"w": "拒否", "a": "似た意味"}, {"w": "拡大", "a": "似た意味"}, {"w": "拾得", "a": "似た意味"}, {"w": "指名", "a": "動詞の後に目的語"}, {"w": "挑戦", "a": "動詞の後に目的語"}, {"w": "授受", "a": "似た意味"}, {"w": "排他", "a": "動詞の後に目的語"}, {"w": "排気", "a": "動詞の後に目的語"}, {"w": "排水", "a": "動詞の後に目的語"}, {"w": "採決", "a": "動詞の後に目的語"}, {"w": "接触", "a": "似た意味"}, {"w": "推測", "a": "似た意味"}, {"w": "掲載", "a": "似た意味"}, {"w": "提案", "a": "動詞の後に目的語"}, {"w": "換気", "a": "動詞の後に目的語"}, {"w": "握力", "a": "前の漢字が後の漢字を修飾"}, {"w": "援助", "a": "似た意味"}, {"w": "摂取", "a": "似た意味"}, {"w": "支柱", "a": "動詞の後に目的語"}, {"w": "攻防", "a": "反対の意味"}, {"w": "放棄", "a": "似た意味"}, {"w": "救援", "a": "似た意味"}, {"w": "散在", "a": "前の漢字が後の漢字を修飾"}, {"w": "散財", "a": "動詞の後に目的語"}, {"w": "敬老", "a": "動詞の後に目的語"}, {"w": "断念", "a": "動詞の後に目的語"}, {"w": "断熱", "a": "動詞の後に目的語"}, {"w": "断絶", "a": "似た意味"}, {"w": "断罪", "a": "動詞の後に目的語"}, {"w": "断食", "a": "動詞の後に目的語"}, {"w": "新入", "a": "前の漢字が後の漢字を修飾"}, {"w": "新旧", "a": "反対の意味"}, {"w": "施錠", "a": "動詞の後に目的語"}, {"w": "旋回", "a": "似た意味"}, {"w": "日課", "a": "前の漢字が後の漢字を修飾"}, {"w": "早熟", "a": "前の漢字が後の漢字を修飾"}, {"w": "早速", "a": "似た意味"}, {"w": "昇天", "a": "動詞の後に目的語"}, {"w": "昇降", "a": "反対の意味"}, {"w": "明暗", "a": "反対の意味"}, {"w": "昨晩", "a": "前の漢字が後の漢字を修飾"}, {"w": "是非", "a": "反対の意味"}, {"w": "晩秋", "a": "前の漢字が後の漢字を修飾"}, {"w": "晴雨", "a": "反対の意味"}, {"w": "暗躍", "a": "前の漢字が後の漢字を修飾"}, {"w": "暗黒", "a": "似た意味"}, {"w": "暫時", "a": "前の漢字が後の漢字を修飾"}, {"w": "書庫", "a": "前の漢字が後の漢字を修飾"}, {"w": "最大", "a": "前の漢字が後の漢字を修飾"}, {"w": "月末", "a": "前の漢字が後の漢字を修飾"}, {"w": "有無", "a": "反対の意味"}, {"w": "服従", "a": "似た意味"}, {"w": "望郷", "a": "動詞の後に目的語"}, {"w": "朝夕", "a": "反対の意味"}, {"w": "本末", "a": "反対の意味"}, {"w": "果樹", "a": "前の漢字が後の漢字を修飾"}, {"w": "架橋", "a": "動詞の後に目的語"}, {"w": "柔和", "a": "似た意味"}, {"w": "柔軟", "a": "似た意味"}, {"w": "栄華", "a": "似た意味"}, {"w": "株価", "a": "前の漢字が後の漢字を修飾"}, {"w": "核心", "a": "似た意味"}, {"w": "棄却", "a": "似た意味"}, {"w": "検査", "a": "似た意味"}, {"w": "概算", "a": "前の漢字が後の漢字を修飾"}, {"w": "概論", "a": "前の漢字が後の漢字を修飾"}, {"w": "模倣", "a": "似た意味"}, {"w": "模造", "a": "前の漢字が後の漢字を修飾"}, {"w": "樹木", "a": "似た意味"}, {"w": "欠礼", "a": "動詞の後に目的語"}, {"w": "欠陥", "a": "似た意味"}, {"w": "歌人", "a": "前の漢字が後の漢字を修飾"}, {"w": "歓声", "a": "前の漢字が後の漢字を修飾"}, {"w": "正解", "a": "前の漢字が後の漢字を修飾"}, {"w": "正誤", "a": "反対の意味"}, {"w": "正邪", "a": "反対の意味"}, {"w": "比肩", "a": "動詞の後に目的語"}, {"w": "気楽", "a": "主語と述語"}, {"w": "気絶", "a": "主語と述語"}, {"w": "水害", "a": "前の漢字が後の漢字を修飾"}, {"w": "氷解", "a": "主語と述語"}, {"w": "永久", "a": "似た意味"}, {"w": "永遠", "a": "似た意味"}, {"w": "決議", "a": "動詞の後に目的語"}, {"w": "汽笛", "a": "前の漢字が後の漢字を修飾"}, {"w": "沈没", "a": "似た意味"}, {"w": "沈着", "a": "似た意味"}, {"w": "河岸", "a": "前の漢字が後の漢字を修飾"}, {"w": "法則", "a": "似た意味"}, {"w": "波乱", "a": "主語と述語"}, {"w": "波動", "a": "主語と述語"}, {"w": "波及", "a": "主語と述語"}, {"w": "泳法", "a": "前の漢字が後の漢字を修飾"}, {"w": "海洋", "a": "似た意味"}, {"w": "液体", "a": "前の漢字が後の漢字を修飾"}, {"w": "混交", "a": "似た意味"}, {"w": "混濁", "a": "似た意味"}, {"w": "添加", "a": "似た意味"}, {"w": "清潔", "a": "似た意味"}, {"w": "清濁", "a": "反対の意味"}, {"w": "渋滞", "a": "似た意味"}, {"w": "減退", "a": "似た意味"}, {"w": "温泉", "a": "前の漢字が後の漢字を修飾"}, {"w": "満足", "a": "似た意味"}, {"w": "源流", "a": "前の漢字が後の漢字を修飾"}, {"w": "漆器", "a": "前の漢字が後の漢字を修飾"}, {"w": "漸進", "a": "前の漢字が後の漢字を修飾"}, {"w": "激烈", "a": "似た意味"}, {"w": "火災", "a": "前の漢字が後の漢字を修飾"}, {"w": "災難", "a": "似た意味"}, {"w": "炉辺", "a": "前の漢字が後の漢字を修飾"}, {"w": "点火", "a": "動詞の後に目的語"}, {"w": "烏合", "a": "主語と述語"}, {"w": "煙害", "a": "前の漢字が後の漢字を修飾"}, {"w": "燃焼", "a": "似た意味"}, {"w": "独演", "a": "前の漢字が後の漢字を修飾"}, {"w": "狭量", "a": "前の漢字が後の漢字を修飾"}, {"w": "獲得", "a": "似た意味"}, {"w": "玉石", "a": "反対の意味"}, {"w": "王冠", "a": "前の漢字が後の漢字を修飾"}, {"w": "王座", "a": "前の漢字が後の漢字を修飾"}, {"w": "王政", "a": "主語と述語"}, {"w": "理非", "a": "反対の意味"}, {"w": "瓦解", "a": "主語と述語"}, {"w": "生誕", "a": "似た意味"}, {"w": "留意", "a": "動詞の後に目的語"}, {"w": "異同", "a": "反対の意味"}, {"w": "疎外", "a": "似た意味"}, {"w": "発熱", "a": "動詞の後に目的語"}, {"w": "発音", "a": "動詞の後に目的語"}, {"w": "白墨", "a": "前の漢字が後の漢字を修飾"}, {"w": "白昼", "a": "前の漢字が後の漢字を修飾"}, {"w": "皮革", "a": "似た意味"}, {"w": "益鳥", "a": "前の漢字が後の漢字を修飾"}, {"w": "盛衰", "a": "反対の意味"}, {"w": "直立", "a": "前の漢字が後の漢字を修飾"}, {"w": "直轄", "a": "前の漢字が後の漢字を修飾"}, {"w": "真実", "a": "似た意味"}, {"w": "真贋", "a": "反対の意味"}, {"w": "着脱", "a": "反対の意味"}, {"w": "着陸", "a": "動詞の後に目的語"}, {"w": "砕氷", "a": "動詞の後に目的語"}, {"w": "破壊", "a": "似た意味"}, {"w": "破損", "a": "似た意味"}, {"w": "硬軟", "a": "反対の意味"}, {"w": "碁石", "a": "前の漢字が後の漢字を修飾"}, {"w": "祖国", "a": "前の漢字が後の漢字を修飾"}, {"w": "祝宴", "a": "前の漢字が後の漢字を修飾"}, {"w": "禁酒", "a": "動詞の後に目的語"}, {"w": "禍福", "a": "反対の意味"}, {"w": "秀逸", "a": "似た意味"}, {"w": "私有", "a": "主語と述語"}, {"w": "私立", "a": "主語と述語"}, {"w": "私設", "a": "主語と述語"}, {"w": "私選", "a": "主語と述語"}, {"w": "稽古", "a": "動詞の後に目的語"}, {"w": "穏和", "a": "似た意味"}, {"w": "究極", "a": "似た意味"}, {"w": "空疎", "a": "似た意味"}, {"w": "空虚", "a": "似た意味"}, {"w": "窮屈", "a": "似た意味"}, {"w": "端末", "a": "似た意味"}, {"w": "競争", "a": "似た意味"}, {"w": "笑顔", "a": "前の漢字が後の漢字を修飾"}, {"w": "策略", "a": "似た意味"}, {"w": "節約", "a": "似た意味"}, {"w": "粗悪", "a": "似た意味"}, {"w": "精密", "a": "似た意味"}, {"w": "納税", "a": "動詞の後に目的語"}, {"w": "純粋", "a": "似た意味"}, {"w": "素顔", "a": "前の漢字が後の漢字を修飾"}, {"w": "細大", "a": "反対の意味"}, {"w": "終始", "a": "反対の意味"}, {"w": "経緯", "a": "反対の意味"}, {"w": "継続", "a": "似た意味"}, {"w": "続出", "a": "前の漢字が後の漢字を修飾"}, {"w": "締結", "a": "似た意味"}, {"w": "緩急", "a": "反対の意味"}, {"w": "緩慢", "a": "似た意味"}, {"w": "縦横", "a": "反対の意味"}, {"w": "縮小", "a": "似た意味"}, {"w": "繁栄", "a": "似た意味"}, {"w": "繁閑", "a": "反対の意味"}, {"w": "美談", "a": "前の漢字が後の漢字を修飾"}, {"w": "習字", "a": "動詞の後に目的語"}, {"w": "習慣", "a": "前の漢字が後の漢字を修飾"}, {"w": "耐震", "a": "動詞の後に目的語"}, {"w": "育児", "a": "動詞の後に目的語"}, {"w": "脳波", "a": "前の漢字が後の漢字を修飾"}, {"w": "腐朽", "a": "似た意味"}, {"w": "腹痛", "a": "主語と述語"}, {"w": "自伝", "a": "前の漢字が後の漢字を修飾"}, {"w": "自我", "a": "似た意味"}, {"w": "自炊", "a": "主語と述語"}, {"w": "自転", "a": "前の漢字が後の漢字を修飾"}, {"w": "興亡", "a": "反対の意味"}, {"w": "船出", "a": "主語と述語"}, {"w": "船舶", "a": "似た意味"}, {"w": "良否", "a": "反対の意味"}, {"w": "苦楽", "a": "反対の意味"}, {"w": "苦笑", "a": "前の漢字が後の漢字を修飾"}, {"w": "虚偽", "a": "似た意味"}, {"w": "虚空", "a": "似た意味"}, {"w": "虚飾", "a": "前の漢字が後の漢字を修飾"}, {"w": "表裏", "a": "反対の意味"}, {"w": "衰微", "a": "動詞の後に目的語"}, {"w": "被害", "a": "動詞の後に目的語"}, {"w": "裁断", "a": "似た意味"}, {"w": "製造", "a": "似た意味"}, {"w": "視界", "a": "前の漢字が後の漢字を修飾"}, {"w": "視線", "a": "前の漢字が後の漢字を修飾"}, {"w": "親友", "a": "前の漢字が後の漢字を修飾"}, {"w": "親睦", "a": "似た意味"}, {"w": "解散", "a": "似た意味"}, {"w": "解熱", "a": "動詞の後に目的語"}, {"w": "言語", "a": "似た意味"}, {"w": "記名", "a": "動詞の後に目的語"}, {"w": "診察", "a": "似た意味"}, {"w": "証明", "a": "似た意味"}, {"w": "話題", "a": "前の漢字が後の漢字を修飾"}, {"w": "誠実", "a": "似た意味"}, {"w": "調髪", "a": "動詞の後に目的語"}, {"w": "諾否", "a": "反対の意味"}, {"w": "謹慎", "a": "似た意味"}, {"w": "議題", "a": "前の漢字が後の漢字を修飾"}, {"w": "譲渡", "a": "似た意味"}, {"w": "豪邸", "a": "前の漢字が後の漢字を修飾"}, {"w": "豪雨", "a": "前の漢字が後の漢字を修飾"}, {"w": "貧乏", "a": "似た意味"}, {"w": "貯蓄", "a": "似た意味"}, {"w": "貸借", "a": "反対の意味"}, {"w": "賛否", "a": "反対の意味"}, {"w": "賞罰", "a": "反対の意味"}, {"w": "賢愚", "a": "反対の意味"}, {"w": "賢明", "a": "似た意味"}, {"w": "赤貧", "a": "前の漢字が後の漢字を修飾"}, {"w": "起源", "a": "似た意味"}, {"w": "跳躍", "a": "似た意味"}, {"w": "身体", "a": "似た意味"}, {"w": "転地", "a": "動詞の後に目的語"}, {"w": "転身", "a": "動詞の後に目的語"}, {"w": "軽蔑", "a": "似た意味"}, {"w": "軽薄", "a": "似た意味"}, {"w": "軽装", "a": "前の漢字が後の漢字を修飾"}, {"w": "軽重", "a": "反対の意味"}, {"w": "輪郭", "a": "似た意味"}, {"w": "辛勝", "a": "前の漢字が後の漢字を修飾"}, {"w": "辛苦", "a": "似た意味"}, {"w": "送迎", "a": "反対の意味"}, {"w": "逆境", "a": "前の漢字が後の漢字を修飾"}, {"w": "通貨", "a": "前の漢字が後の漢字を修飾"}, {"w": "速報", "a": "前の漢字が後の漢字を修飾"}, {"w": "造形", "a": "動詞の後に目的語"}, {"w": "連載", "a": "前の漢字が後の漢字を修飾"}, {"w": "逸品", "a": "前の漢字が後の漢字を修飾"}, {"w": "逸脱", "a": "似た意味"}, {"w": "逸話", "a": "前の漢字が後の漢字を修飾"}, {"w": "遅刻", "a": "動詞の後に目的語"}, {"w": "遅速", "a": "反対の意味"}, {"w": "過去", "a": "似た意味"}, {"w": "道路", "a": "似た意味"}, {"w": "遠近", "a": "反対の意味"}, {"w": "遭遇", "a": "似た意味"}, {"w": "遷都", "a": "動詞の後に目的語"}, {"w": "選択", "a": "似た意味"}, {"w": "遺失", "a": "似た意味"}, {"w": "邪推", "a": "前の漢字が後の漢字を修飾"}, {"w": "重罪", "a": "前の漢字が後の漢字を修飾"}, {"w": "金庫", "a": "前の漢字が後の漢字を修飾"}, {"w": "鈍器", "a": "前の漢字が後の漢字を修飾"}, {"w": "鋭敏", "a": "似た意味"}, {"w": "錠剤", "a": "前の漢字が後の漢字を修飾"}, {"w": "錯誤", "a": "似た意味"}, {"w": "鎮痛", "a": "動詞の後に目的語"}, {"w": "長寿", "a": "主語と述語"}, {"w": "開会", "a": "動詞の後に目的語"}, {"w": "開幕", "a": "動詞の後に目的語"}, {"w": "開閉", "a": "反対の意味"}, {"w": "防火", "a": "動詞の後に目的語"}, {"w": "除名", "a": "動詞の後に目的語"}, {"w": "除湿", "a": "動詞の後に目的語"}, {"w": "陰陽", "a": "反対の意味"}, {"w": "隔離", "a": "前の漢字が後の漢字を修飾"}, {"w": "障害", "a": "似た意味"}, {"w": "集合", "a": "動詞の後に目的語"}, {"w": "雌雄", "a": "反対の意味"}, {"w": "離合", "a": "反対の意味"}, {"w": "離陸", "a": "動詞の後に目的語"}, {"w": "雪崩", "a": "主語と述語"}, {"w": "雲散", "a": "主語と述語"}, {"w": "雷鳴", "a": "主語と述語"}, {"w": "需給", "a": "反対の意味"}, {"w": "霧散", "a": "主語と述語"}, {"w": "静観", "a": "前の漢字が後の漢字を修飾"}, {"w": "順境", "a": "前の漢字が後の漢字を修飾"}, {"w": "預金", "a": "前の漢字が後の漢字を修飾"}, {"w": "頑固", "a": "似た意味"}, {"w": "顕示", "a": "前の漢字が後の漢字を修飾"}, {"w": "飢餓", "a": "似た意味"}, {"w": "飽食", "a": "前の漢字が後の漢字を修飾"}, {"w": "養蚕", "a": "反対の意味"}, {"w": "首尾", "a": "反対の意味"}, {"w": "騒音", "a": "前の漢字が後の漢字を修飾"}, {"w": "高低", "a": "反対の意味"}, {"w": "高山", "a": "前の漢字が後の漢字を修飾"}, {"w": "高貴", "a": "似た意味"}, {"w": "鳥瞰", "a": "前の漢字が後の漢字を修飾"}, {"w": "常任", "a": "前の漢字が後の漢字を修飾"}, {"w": "確信", "a": "前の漢字が後の漢字を修飾"}];
+const TC_COMPOUNDS = [{"w": "仮説", "a": "どれにもあてはまらない"}, {"w": "作文", "a": "動詞の後に目的語"}, {"w": "停泊", "a": "似た意味"}, {"w": "偽造", "a": "前の漢字が後の漢字を修飾"}, {"w": "利害", "a": "反対の意味"}, {"w": "剣道", "a": "前の漢字が後の漢字を修飾"}, {"w": "加入", "a": "どれにもあてはまらない"}, {"w": "及第", "a": "動詞の後に目的語"}, {"w": "取材", "a": "動詞の後に目的語"}, {"w": "史跡", "a": "どれにもあてはまらない"}, {"w": "哀悼", "a": "似た意味"}, {"w": "噴火", "a": "どれにもあてはまらない"}, {"w": "国交", "a": "主語と述語"}, {"w": "威嚇", "a": "前の漢字が後の漢字を修飾"}, {"w": "媒介", "a": "似た意味"}, {"w": "字典", "a": "前の漢字が後の漢字を修飾"}, {"w": "安危", "a": "反対の意味"}, {"w": "少量", "a": "前の漢字が後の漢字を修飾"}, {"w": "干満", "a": "どれにもあてはまらない"}, {"w": "後悔", "a": "どれにもあてはまらない"}, {"w": "急病", "a": "前の漢字が後の漢字を修飾"}, {"w": "悲喜", "a": "反対の意味"}, {"w": "慎重", "a": "動詞の後に目的語"}, {"w": "投稿", "a": "動詞の後に目的語"}, {"w": "授受", "a": "似た意味"}, {"w": "推奨", "a": "似た意味"}, {"w": "攻防", "a": "反対の意味"}, {"w": "散財", "a": "どれにもあてはまらない"}, {"w": "昨晩", "a": "どれにもあてはまらない"}, {"w": "暗躍", "a": "どれにもあてはまらない"}, {"w": "本末", "a": "反対の意味"}, {"w": "架橋", "a": "動詞の後に目的語"}, {"w": "比肩", "a": "動詞の後に目的語"}, {"w": "沈没", "a": "似た意味"}, {"w": "災難", "a": "似た意味"}, {"w": "留意", "a": "動詞の後に目的語"}, {"w": "益鳥", "a": "どれにもあてはまらない"}, {"w": "盛衰", "a": "どれにもあてはまらない"}, {"w": "直営", "a": "どれにもあてはまらない"}, {"w": "秀逸", "a": "似た意味"}, {"w": "純粋", "a": "どれにもあてはまらない"}, {"w": "街灯", "a": "どれにもあてはまらない"}, {"w": "被害", "a": "動詞の後に目的語"}, {"w": "言行", "a": "反対の意味"}, {"w": "豪雨", "a": "前の漢字が後の漢字を修飾"}, {"w": "貫通", "a": "似た意味"}, {"w": "遺失", "a": "似た意味"}, {"w": "鋭敏", "a": "似た意味"}, {"w": "離合", "a": "反対の意味"}, {"w": "雲散", "a": "主語と述語"}, {"w": "飢餓", "a": "似た意味"}, {"w": "上下", "a": "反対の意味"}, {"w": "大小", "a": "反対の意味"}, {"w": "河川", "a": "似た意味"}, {"w": "登山", "a": "動詞の後に目的語"}, {"w": "絵画", "a": "似た意味"}];
+const MEANINGS = [{"q": "つつみかくさないさま", "choices": {"A": "露呈", "B": "暴露", "C": "あけすけ", "D": "あか抜け", "E": "つつ抜け"}, "a": "C"}, {"q": "ある学問・技術について広く深い知識と理解を持っていること", "choices": {"A": "英知", "B": "奥義", "C": "造詣", "D": "含蓄", "E": "高尚"}, "a": "C"}, {"q": "そのことだけにかかわって、他をおろそかにする", "choices": {"A": "ひたる", "B": "かまける", "C": "いそしむ", "D": "かかりきる", "E": "なおざりにする", "F": "おざなり"}, "a": "B"}, {"q": "一時しのぎにとりつくろっておくこと", "choices": {"A": "虚勢", "B": "見栄", "C": "糊塗", "D": "虚飾", "E": "上塗り"}, "a": "C"}, {"q": "そうするよりほかにない", "choices": {"A": "申し分ない", "B": "ほかならない", "C": "さしさわりない", "D": "よんどころない", "E": "抜き差しならない"}, "a": "D"}, {"q": "なみはずれて程度を超えること", "choices": {"A": "希代", "B": "莫大", "C": "絶大", "D": "奇抜", "E": "法外"}, "a": "C"}, {"q": "物事のくわしい事情", "choices": {"A": "子細", "B": "明細", "C": "精細", "D": "細部", "E": "細事"}, "a": "A"}, {"q": "仲が悪くにらみ合うこと", "choices": {"A": "敵視", "B": "敵対", "C": "反抗", "D": "反目", "E": "背反", "F": "離反"}, "a": "D"}, {"q": "だんだんいい気になって人を見下したふるまいをすること", "choices": {"A": "虚勢", "B": "誇示", "C": "自負", "D": "増長", "E": "不遜", "F": "慢心"}, "a": "D"}, {"q": "ものごとの扱い方がぞんざいなこと", "choices": {"A": "横着", "B": "粗略", "C": "粗漏", "D": "無謀", "E": "乱暴"}, "a": "B"}, {"q": "厳しく区別すること", "choices": {"A": "鑑別", "B": "差別", "C": "識別", "D": "峻別", "E": "判別", "F": "分別"}, "a": "D"}, {"q": "うつつ", "choices": {"A": "夢", "B": "退屈", "C": "現実", "D": "狂気", "E": "時間"}, "a": "C"}, {"q": "勝つ見込みが大きい", "choices": {"A": "清算", "B": "目算", "C": "公算", "D": "概算", "E": "試算", "F": "採算"}, "a": "C"}, {"q": "卑近な", "choices": {"A": "身近な", "B": "卑しい", "C": "低俗な", "D": "低級な", "E": "当今の"}, "a": "A"}, {"q": "殊勝な心がけの持ち主だ", "choices": {"A": "健気な", "B": "可憐な", "C": "優雅な", "D": "利口な", "E": "堅実な", "F": "素直な"}, "a": "A"}, {"q": "ある物事を行うのに役に立つ", "choices": {"A": "与《アズカ》る", "B": "充てる", "C": "供する", "D": "支える", "E": "資する"}, "a": "E"}, {"q": "困難にくじけない強い意志", "choices": {"A": "英気", "B": "気鋭", "C": "気概", "D": "気丈", "E": "気勢"}, "a": "C"}, {"q": "自由勝手にはねまわること", "choices": {"A": "飛翔", "B": "跳躍", "C": "躍動", "D": "跳梁", "E": "躍如"}, "a": "D"}, {"q": "他人に見つからないようにこっそりとかくすこと", "choices": {"A": "隠匿", "B": "隠蔽", "C": "奥秘", "D": "秘蔵", "E": "機密", "F": "内密"}, "a": "A"}, {"q": "すみずみまで詳しく知っていること", "choices": {"A": "察知", "B": "知見", "C": "知遇", "D": "通暁《ギョウ》", "E": "周知"}, "a": "D"}, {"q": "人を威圧するような態度", "choices": {"A": "横柄《ヘイ》", "B": "尊大", "C": "威丈高《イタケダカ》", "D": "鉄面皮《鉄面皮》", "E": "威風堂々"}, "a": "C"}, {"q": "進んで新しいことをすること", "choices": {"A": "推進", "B": "新進", "C": "進取", "D": "先進", "E": "進出"}, "a": "C"}, {"q": "無用の心配", "choices": {"A": "心痛", "B": "腐心", "C": "杞憂", "D": "徒労", "E": "蛇足"}, "a": "C"}, {"q": "不行き届きでけしからぬこと", "choices": {"A": "不倫", "B": "不義", "C": "不埒", "D": "不実", "E": "不徳"}, "a": "C"}, {"q": "全体を大きく眺めわたすこと", "choices": {"A": "鳥瞰", "B": "網羅", "C": "眺望", "D": "高覧", "E": "凌駕"}, "a": "A"}, {"q": "物事が進行しておもしろくなったところ", "choices": {"A": "頂点", "B": "佳境", "C": "要所", "D": "醍醐味", "E": "正念場"}, "a": "B"}, {"q": "再三", "choices": {"A": "時々", "B": "常に", "C": "いつも", "D": "さらに", "E": "たびたび"}, "a": "E"}, {"q": "他人の主張、批判に対し論じ返すこと", "choices": {"A": "反撃", "B": "反骨", "C": "反問", "D": "反駁《バク》", "E": "反証"}, "a": "D"}, {"q": "心がきたなく、いやしい", "choices": {"A": "がめつい", "B": "さもしい", "C": "あくどい", "D": "はしたない", "E": "意地きたない"}, "a": "B"}, {"q": "ことばを加えたり言い換えたりしてわかりやすく説明すること", "choices": {"A": "啓発", "B": "喧（ケン）伝", "C": "示唆", "D": "指南", "E": "敷衍（フエン）"}, "a": "E"}, {"q": "前途や将来に望みをかけること", "choices": {"A": "渇望", "B": "宿望", "C": "嘱望（ショクボウ）", "D": "待望", "E": "有望"}, "a": "C"}, {"q": "招き寄せること", "choices": {"A": "導入", "B": "招待", "C": "歓迎", "D": "誘致", "E": "待機"}, "a": "D"}, {"q": "指示しはげますこと", "choices": {"A": "励行", "B": "激励", "C": "応援", "D": "援護", "E": "督励"}, "a": "E"}, {"q": "相手の計略を見抜く", "choices": {"A": "看過する", "B": "看破する", "C": "凝視する", "D": "投資する", "E": "予見する", "F": "露見する"}, "a": "B"}, {"q": "おどかすこと", "choices": {"A": "示威", "B": "驚愕", "C": "挑発", "D": "威嚇", "E": "脅威"}, "a": "D"}, {"q": "事態が迫っているのに、急ごうとしない様子", "choices": {"A": "怠惰", "B": "緩慢", "C": "泰然", "D": "沈着", "E": "悠長"}, "a": "E"}, {"q": "そうなることが避けられないこと", "choices": {"A": "必須", "B": "必中", "C": "必至", "D": "逼迫", "E": "必死"}, "a": "C"}, {"q": "助力すること", "choices": {"A": "加勢", "B": "共謀", "C": "結託", "D": "貢献", "E": "団結", "F": "連携"}, "a": "A"}, {"q": "物事の進行が急にくじけること", "choices": {"A": "失速", "B": "頓挫", "C": "急転", "D": "難航", "E": "破綻"}, "a": "B"}, {"q": "きわだって他より優れていること", "choices": {"A": "隔絶", "B": "出色", "C": "優越", "D": "破格", "E": "筆頭"}, "a": "B"}, {"q": "まったく問題にしないこと", "choices": {"A": "軽視", "B": "無視", "C": "無関心", "D": "無頓着", "E": "度外視"}, "a": "E"}, {"q": "おもわず笑ってしまうこと", "choices": {"A": "苦笑", "B": "哄《コウ》笑", "C": "一笑", "D": "失笑", "E": "嘲笑"}, "a": "D"}, {"q": "よく行き届いていること", "choices": {"A": "網羅", "B": "繊細", "C": "配慮", "D": "周到", "E": "緻密"}, "a": "D"}, {"q": "どうにもならないことを残念がる", "choices": {"A": "気に病む", "B": "ほぞをかむ", "C": "胸を痛める", "D": "腕をこまねく", "E": "こうべをたれる"}, "a": "B"}, {"q": "こまかなところまではっきりしているさま", "choices": {"A": "あきらか", "B": "あざやか", "C": "きわやか", "D": "こまやか", "E": "つまびらか"}, "a": "E"}, {"q": "心のなかでのおおまかな見積もり", "choices": {"A": "皮算用", "B": "丼勘定", "C": "懐具合", "D": "前勘定", "E": "胸算用", "F": "目分量"}, "a": "E"}, {"q": "うんざりして嫌になること", "choices": {"A": "嫌悪", "B": "困惑", "C": "逡巡", "D": "嘆息", "E": "辟易《辟易》", "F": "蔑視"}, "a": "E"}, {"q": "他から飛び抜けて優れていること", "choices": {"A": "傑出", "B": "独走", "C": "優秀", "D": "孤独", "E": "俊敏"}, "a": "A"}, {"q": "時流にのり世にもてはやされる人", "choices": {"A": "英雄", "B": "権威", "C": "神童", "D": "寵《チョウ》児", "E": "花形"}, "a": "D"}, {"q": "世にもまれなこと", "choices": {"A": "格別", "B": "希代", "C": "珍奇", "D": "突飛", "E": "非凡"}, "a": "B"}, {"q": "もめごと", "choices": {"A": "確執", "B": "齟齬", "C": "反発", "D": "反目", "E": "不和", "F": "悶《モン》着"}, "a": "F"}, {"q": "常識や慣習にとらわれずおもうままにふるまうこと", "choices": {"A": "奔放", "B": "邁進", "C": "破天荒", "D": "身勝手", "E": "天真爛《ラン》漫"}, "a": "A"}, {"q": "あやまちなどを問いただして非難すること", "choices": {"A": "罵倒", "B": "懲罰", "C": "糾弾", "D": "誹謗", "E": "懲戒"}, "a": "C"}, {"q": "自分より優れている相手をねたましく思う", "choices": {"A": "うとむ", "B": "うらむ", "C": "そしる", "D": "そねむ", "E": "にくむ"}, "a": "D"}, {"q": "知識が不十分である", "choices": {"A": "うとい", "B": "つたない", "C": "いたらない", "D": "いぶかしい", "E": "おぼつかない"}, "a": "A"}, {"q": "人に知れないように策動すること", "choices": {"A": "潜行", "B": "隠密", "C": "扇動", "D": "内密", "E": "暗躍"}, "a": "E"}, {"q": "ものがゆらゆら揺れる", "choices": {"A": "そよぐ", "B": "ぶれる", "C": "たゆたう", "D": "ふるえる", "E": "はためく"}, "a": "C"}, {"q": "初めから続けてその組織に属していること", "choices": {"A": "古参", "B": "古株", "C": "子飼い", "D": "えり抜き", "E": "生え抜き"}, "a": "E"}, {"q": "他人の権利を傷つけたり社会秩序を乱したりする", "choices": {"A": "威圧する", "B": "愚弄する", "C": "蹂躙する", "D": "席巻《ケン》する", "E": "籠《ロウ》絡する"}, "a": "C"}, {"q": "さしひきゼロにすること", "choices": {"A": "皆無", "B": "加減", "C": "損得", "D": "相殺", "E": "有無"}, "a": "D"}, {"q": "二等分", "choices": {"A": "両断", "B": "折半", "C": "均分", "D": "山分け", "E": "五分五分"}, "a": "B"}, {"q": "あげつらう", "choices": {"A": "からかう", "B": "おおげさに言う", "C": "あからさまに言う", "D": "いいかげんなことを言う", "E": "ささいなことを言い立てる"}, "a": "E"}, {"q": "気取りがなく、さっぱりとして洗練されているさま", "choices": {"A": "斬新", "B": "洒《シャ》脱", "C": "淡白", "D": "風雅", "E": "幽玄"}, "a": "B"}, {"q": "いかにも利口なさま", "choices": {"A": "半可通", "B": "小利口な", "C": "さかしげ", "D": "ものしり顏", "E": "しったかぶり"}, "a": "C"}, {"q": "取り立てて言うに及ばないほどわずかであること", "choices": {"A": "気薄", "B": "些《サ》少", "C": "若干", "D": "半端", "E": "微細"}, "a": "B"}, {"q": "できごとなどをあらかじめ見通すこと", "choices": {"A": "予想", "B": "予期", "C": "予見", "D": "予言", "E": "予告"}, "a": "C"}, {"q": "様子がどうも変だと思う", "choices": {"A": "あやぶむ", "B": "いぶかる", "C": "かんぐる", "D": "ためらう", "E": "おしはかる"}, "a": "B"}, {"q": "苦しめ悩ます", "choices": {"A": "忌む", "B": "疎む", "C": "苛《サイナ》む", "D": "凄む", "E": "謗《そし》る"}, "a": "C"}, {"q": "心配顔", "choices": {"A": "形相", "B": "剣幕", "C": "愁眉《ビ》", "D": "渋面", "E": "血眼", "F": "破顔"}, "a": "C"}, {"q": "窮地から逃れる方法", "choices": {"A": "秘策", "B": "迂回", "C": "便法", "D": "活路", "E": "遁走"}, "a": "D"}, {"q": "ある状態に固定して進展しないこと", "choices": {"A": "膠《コウ》着", "B": "停滞", "C": "凍結", "D": "頓挫", "E": "保留"}, "a": "A"}, {"q": "伝わり広がっていくこと", "choices": {"A": "伝達", "B": "伝承", "C": "伝来", "D": "伝播《パ》", "E": "伝道"}, "a": "D"}, {"q": "頭が良く賢いこと", "choices": {"A": "機敏", "B": "多才", "C": "博識", "D": "非凡", "E": "有能", "F": "利発"}, "a": "F"}, {"q": "自分の思うまま", "choices": {"A": "得意", "B": "私意", "C": "心意", "D": "真意", "E": "恣意"}, "a": "E"}, {"q": "準備ができたところでゆっくりと動き始めるさま", "choices": {"A": "やおら", "B": "おずおず", "C": "おっつけ", "D": "おっとり", "E": "そそくさ", "F": "ひょうひょう"}, "a": "A"}, {"q": "ひどく感心すること", "choices": {"A": "感涙", "B": "驚嘆", "C": "仰天", "D": "心酔", "E": "崇敬"}, "a": "B"}, {"q": "慎みの態度で従うこと", "choices": {"A": "心服", "B": "屈従", "C": "恭順", "D": "崇敬", "E": "謹慎"}, "a": "C"}, {"q": "だんだん少なくなること", "choices": {"A": "軽減", "B": "消耗", "C": "衰亡", "D": "凋《チョウ》落", "E": "逓《テイ》減"}, "a": "E"}, {"q": "心に深く刻み付ける", "choices": {"A": "鑑みる", "B": "期する", "C": "留める", "D": "念ずる", "E": "銘じる"}, "a": "E"}, {"q": "物事を正しく判断する力", "choices": {"A": "眼力", "B": "機知", "C": "心得", "D": "識見", "E": "識別"}, "a": "D"}, {"q": "ねらいを定めること", "choices": {"A": "目星", "B": "目的", "C": "標的", "D": "見当", "E": "照準"}, "a": "E"}, {"q": "相手の事情を汲み取ること", "choices": {"A": "熟慮", "B": "了承", "C": "斟酌《しんしゃく》", "D": "裁量", "E": "察知"}, "a": "C"}, {"q": "欠点、悪習などを正しい状態に直すこと", "choices": {"A": "修整", "B": "修正", "C": "矯正", "D": "整形", "E": "鍛錬"}, "a": "C"}, {"q": "企ての仲間に入る", "choices": {"A": "参加", "B": "協賛", "C": "参画", "D": "賛同", "E": "参与"}, "a": "C"}, {"q": "ものが十分にあること", "choices": {"A": "余分", "B": "潤沢", "C": "裕福", "D": "大量", "E": "余裕"}, "a": "B"}, {"q": "優れた意見", "choices": {"A": "所見", "B": "見識", "C": "卓見", "D": "良識", "E": "先見"}, "a": "C"}, {"q": "しのぎを削る", "choices": {"A": "激しく争う", "B": "苦労を重ねる", "C": "無駄を省く", "D": "仕事に打ち込む", "E": "貧乏に耐える"}, "a": "A"}, {"q": "心を痛め悩ますこと", "choices": {"A": "逆心", "B": "疑心", "C": "虚心", "D": "腐心", "E": "確信"}, "a": "D"}, {"q": "詭《キ》弁", "choices": {"A": "おどし", "B": "こじつけ", "C": "いいわけ", "D": "まけおしみ", "E": "いいのがれ"}, "a": "B"}, {"q": "差し障りがあることを感じて遠慮する", "choices": {"A": "はばかる", "B": "ゆだねる", "C": "あまんずる", "D": "かしこまる", "E": "へりくだる"}, "a": "A"}, {"q": "遜《ソン》色", "choices": {"A": "品がない", "B": "欠点がない", "C": "権威がない", "D": "力が及ばない", "E": "見劣りしない"}, "a": "E"}, {"q": "巧みでないこと", "choices": {"A": "つたない", "B": "ぎこちない", "C": "たわいない", "D": "ふがいない", "E": "おぼつかない"}, "a": "A"}, {"q": "自分の地位や名声などの安全をはかること", "choices": {"A": "保安", "B": "保守", "C": "保証", "D": "保身", "E": "保全"}, "a": "D"}, {"q": "公職につかず、民間にいること", "choices": {"A": "一般", "B": "在野", "C": "私人", "D": "庶民", "E": "市井", "F": "世俗"}, "a": "B"}, {"q": "大目に見ること", "choices": {"A": "ひいき", "B": "めこぼし", "C": "甘やかし", "D": "知らん顔", "E": "おおざっぱ"}, "a": "B"}, {"q": "子供が機嫌を悪くして泣く", "choices": {"A": "すねる", "B": "わめく", "C": "むずかる", "D": "ふてくされる", "E": "しゃくりあげる"}, "a": "C"}, {"q": "ためらわず思い切ってするするさま", "choices": {"A": "果断", "B": "愚直", "C": "短慮", "D": "無謀", "E": "勇猛"}, "a": "A"}, {"q": "信用、権威などを失うこと", "choices": {"A": "失意", "B": "失格", "C": "失脚", "D": "失速", "E": "失態", "F": "失墜"}, "a": "F"}, {"q": "文章を何度も練り直す", "choices": {"A": "加筆する", "B": "修正する", "C": "錬成する", "D": "添削する", "E": "改定する", "F": "推敲する"}, "a": "F"}, {"q": "それがまだ解決がつかない問題となっています", "choices": {"A": "勘案", "B": "腹案", "C": "思案", "D": "私案", "E": "懸案", "F": "試案"}, "a": "E"}, {"q": "質の悪い環境", "choices": {"A": "粗悪な", "B": "劣悪な", "C": "邪悪な", "D": "醜悪な", "E": "極悪な", "F": "凶悪な"}, "a": "A"}, {"q": "思わず涙がこぼれる", "choices": {"A": "不覚の", "B": "突然の", "C": "不測の", "D": "不慮の", "E": "無為の"}, "a": "A"}, {"q": "おしはかること、思いやること", "choices": {"A": "推考", "B": "類推", "C": "推論", "D": "推察", "E": "推定"}, "a": "D"}, {"q": "しかたがないと思って受ける", "choices": {"A": "たえる", "B": "あまんずる", "C": "へりくだる", "D": "もてあます", "E": "ひらきなおる"}, "a": "B"}, {"q": "ためらわずに思い切ってするさま", "choices": {"A": "果断", "B": "愚直", "C": "短慮", "D": "無謀", "E": "勇敢"}, "a": "A"}, {"q": "なりふりかまわず懸命に事にあたっている様子", "choices": {"A": "けなげ", "B": "ひたむき", "C": "やみくも", "D": "おおわらわ", "E": "てんてこまい"}, "a": "D"}, {"q": "ものごとの詳しい事情", "choices": {"A": "子細", "B": "明細", "C": "精細", "D": "細部", "E": "細事"}, "a": "A"}, {"q": "やり方などを受け継ぎ、したがうこと", "choices": {"A": "因習", "B": "慣例", "C": "伝承", "D": "踏襲", "E": "伝統"}, "a": "D"}, {"q": "並外れて程度を超えること", "choices": {"A": "希代", "B": "莫大", "C": "絶大", "D": "奇抜", "E": "法外"}, "a": "E"}, {"q": "二つの事柄がぴったりと一致すること", "choices": {"A": "符号", "B": "合同", "C": "適合", "D": "合一", "E": "照合"}, "a": "A"}, {"q": "今日はとてもおだやかだ だの前にカッコ", "choices": {"A": "明日は日曜日だ", "B": "あの建物は立派だ", "C": "これは私の学校だ"}, "a": "B"}, {"q": "他の意見に反対して論じ返すこと", "choices": {"A": "口論", "B": "反発", "C": "反駁（ハンバク）", "D": "論争", "E": "論破"}, "a": "C"}, {"q": "他人の権利を傷つけたり、社会秩序を乱したりする", "choices": {"A": "威圧する", "B": "愚弄する", "C": "蹂躙（ジュウリン）する", "D": "席巻する", "E": "籠絡（ロウラク）する"}, "a": "C"}, {"q": "他人を威嚇するような態度", "choices": {"A": "横柄", "B": "尊大", "C": "居丈高", "D": "鉄仮面", "E": "威風堂々"}, "a": "C"}, {"q": "以前からの願い", "choices": {"A": "切願", "B": "宿願", "C": "懇願", "D": "悲願", "E": "念願"}, "a": "B"}, {"q": "何もしないで傍観している", "choices": {"A": "腰をすえる", "B": "口をぬぐう", "C": "目をつぶる", "D": "足をとめる", "E": "手をこまねく"}, "a": "E"}, {"q": "何もせずぶらぶらしていること", "choices": {"A": "安穏", "B": "怠惰", "C": "無精", "D": "無為", "E": "悠長"}, "a": "D"}, {"q": "個人の判断で処理すること", "choices": {"A": "専横", "B": "私見", "C": "裁量", "D": "独断", "E": "英断"}, "a": "D"}, {"q": "先を争う 先頭を争っている", "choices": {"A": "三軒先の家", "B": "玄関先に置く", "C": "先に立って働く", "D": "先が思いやられる", "E": "一寸先も見えない"}, "a": "C"}, {"q": "分母をはらう 物を隔てているものを取り払う", "choices": {"A": "会費をはらう", "B": "垣根をはらう", "C": "犠牲をはらう", "D": "下宿をはらう", "E": "右足をはらう"}, "a": "B"}, {"q": "勇気がわく ある考えや感情が生じる", "choices": {"A": "湯がわく", "B": "麹《コウジ》がわく", "C": "議論がわく", "D": "非難がわく", "E": "場内がわく"}, "a": "D"}, {"q": "問題とされながらまだ解決がつかない事柄", "choices": {"A": "保留", "B": "懸案", "C": "未決", "D": "難問", "E": "棚上げ"}, "a": "B"}, {"q": "境遇に満足しているさまを言動に表すこと", "choices": {"A": "至福", "B": "闊達", "C": "満喫", "D": "謳歌", "E": "有頂天"}, "a": "D"}, {"q": "夢を持つ 心の中に抱く", "choices": {"A": "意義を持つ", "B": "関心を持つ", "C": "仕事を持つ", "D": "交渉を持つ", "E": "責任を持つ", "F": "所帯を持つ"}, "a": "B"}, {"q": "好ましくないとして拒み退けること", "choices": {"A": "意気", "B": "邪険", "C": "敬遠", "D": "疎外", "E": "排斥"}, "a": "E"}, {"q": "安全：危険＝圧倒的：（　　）", "choices": {"A": "一時的", "B": "相対的", "C": "断片的", "D": "比較的", "E": "部分的"}, "a": "D"}, {"q": "安全：危険＝独自性：（　　）", "choices": {"A": "相対性", "B": "多様性", "C": "抽象性", "D": "同一性", "E": "類似性"}, "a": "E"}, {"q": "山が見える", "choices": {"A": "山が青い", "B": "山が招く", "C": "山が好きだ", "D": "山が連なる", "E": "山がそびえる"}, "a": "B"}, {"q": "心をいためなやますこと", "choices": {"A": "腐心", "B": "疑心", "C": "逆心", "D": "虚心", "E": "執心"}, "a": "A"}, {"q": "思わず笑うこと", "choices": {"A": "苦笑", "B": "哄笑", "C": "一笑", "D": "失笑", "E": "嘲笑"}, "a": "A"}, {"q": "拡散：収束＝遠心：（　）", "choices": {"A": "中心", "B": "求心", "C": "核心", "D": "円心", "E": "重心"}, "a": "B"}, {"q": "数値表記で空位を示す記号は紀元前から複数の文明で見られるが、（　①　）としては、7世紀のインドのブラマーグブタが初めて「いかなる数にゼロを乗じても結果は常にゼロである。いかなる数にゼロを加減してもその値に変化がおこらない」とし、これがゼロの（　②　）として広まった。", "choices": {"A": "①演算対象②概念", "B": "①演算対象②記号", "C": "①演算対象②数字"}, "a": "A"}, {"q": "時の流れにのる", "choices": {"A": "時をかせぐ", "B": "時は金なり", "C": "時を見る目", "D": "目がさめた時", "E": "時の鐘が鳴る"}, "a": "C"}, {"q": "洋服：衣類＝短歌：（　　）", "choices": {"A": "長歌", "B": "俳句", "C": "連歌", "D": "文芸", "E": "恋歌"}, "a": "D"}, {"q": "熱力学的な状況変数には、体積または質量に比例する「示量性」の変数と、温度や圧力のように、体積または質量によらない「示強性」の変数とがある。前者は（　①　）で、同じ量を足し合わせると2倍になるが、後者は同じ（　②　）のぬるま湯を注ぎ足しても熱湯にならないように、非加算的である。", "choices": {"A": "①加算的②量", "B": "①加算的②温度", "C": "①示強的②量", "D": "①示強的②温度"}, "a": "B"}, {"q": "物がゆらゆらゆれる", "choices": {"A": "なびく", "B": "ぶれる", "C": "ふるえる", "D": "たゆたう", "E": "はためく"}, "a": "D"}, {"q": "産業：工業＝鉛筆：（　）", "choices": {"A": "文具", "B": "筆記", "C": "色鉛筆", "D": "原稿用紙", "E": "ボールペン"}, "a": "C"}, {"q": "直接は言葉に表さないところ", "choices": {"A": "本心", "B": "無言", "C": "他意", "D": "余念", "E": "言外"}, "a": "E"}, {"q": "立派に見せようとしてうわべを飾ること", "choices": {"A": "装飾", "B": "粉飾", "C": "彩飾", "D": "見栄", "E": "上塗り"}, "a": "B"}, {"q": "紙：パルプ＝絹糸：（　　）", "choices": {"A": "まゆ", "B": "着物", "C": "木綿糸", "D": "絹織物", "E": "シルク"}, "a": "A"}, {"q": "経験を積んで人柄などが円熟すること", "choices": {"A": "老練", "B": "晩成", "C": "成熟", "D": "老成", "E": "大成"}, "a": "D"}, {"q": "自分の信ずるところを遠慮せずにいうこと", "choices": {"A": "直言", "B": "進言", "C": "忠言", "D": "放言", "E": "断言"}, "a": "A"}, {"q": "衰えたり栄えたりすること", "choices": {"A": "消長", "B": "進退", "C": "断続", "D": "変遷", "E": "流転"}, "a": "A"}, {"q": "解散：集合＝派遣：（　）", "choices": {"A": "帰国", "B": "出向", "C": "召還", "D": "召集", "E": "復帰"}, "a": "D"}, {"q": "調味料：甘味料＝小説：（　）", "choices": {"A": "文芸", "B": "作家", "C": "随筆", "D": "著述", "E": "私小説"}, "a": "E"}, {"q": "身の程知らず 身分", "choices": {"A": "身に余る光栄", "B": "身につまされる", "C": "身から出たさび", "D": "身を粉にして働く", "E": "身をもって体験する", "F": "身をきられるような思い"}, "a": "A"}, {"q": "辞書：書籍＝障子：（　）", "choices": {"A": "桟（ｻﾝ）", "B": "建具", "C": "和紙", "D": "建築", "E": "ふすま"}, "a": "B"}, {"q": "頭がよい", "choices": {"A": "体によい", "B": "仲がよい", "C": "よい腕前", "D": "よい性格の人", "E": "よい所に進む"}, "a": "C"}];
+const USAGES = [{"q": "ウイルスの侵入を許す", "choices": {"A": "小学生以上の入場を許す", "B": "予算が許すならお願いしたい", "C": "一刻の猶予も許すことができない", "D": "彼女に気を許すべきではなかった", "E": "最終回に逆転を許すことになった"}, "a": "E"}, {"q": "手を貸す", "choices": {"A": "山の手", "B": "手を打つ", "C": "手がかかる", "D": "手に入れる", "E": "手を挙げる", "F": "手を尽くす"}, "a": "F"}, {"q": "例外を認める", "choices": {"A": "文才を認める", "B": "賛成多数と認める", "C": "自分の過失を認める", "D": "犯行の事実を認める", "E": "大学への入学を認める"}, "a": "E"}, {"q": "先を争う", "choices": {"A": "三軒先の家", "B": "玄関先に置く", "C": "先に立って働く", "D": "先が思いやられる", "E": "一寸先も見えない"}, "a": "C"}, {"q": "この道は駅に通じている", "choices": {"A": "四季を通じて暖かい", "B": "生涯を通じて変わらない", "C": "彼は国際情勢に通じている", "D": "どうも話が通じていないようだ", "E": "テレビを通じてそのニュースを知った"}, "a": "D"}, {"q": "人の上に立つ", "choices": {"A": "席を立つ", "B": "役に立つ", "C": "矢面に立つ", "D": "計画が立つ", "E": "理屈が立つ"}, "a": "C"}, {"q": "失敗を重ねつつ成長してゆく", "choices": {"A": "体に悪いと知りつつやめられない", "B": "業績はこの春から好転しつつある", "C": "テレビを見つつアイロンをかける", "D": "何度も確認しつつ書類に記入する", "E": "厚かましいと思いつつ泊めてもらう"}, "a": "D"}, {"q": "美容の効果さえある", "choices": {"A": "名前を呼んでも返事さえない", "B": "朝のあいさつさえ英語で言えない", "C": "上着もないのに雪さえ降ってきた", "D": "今朝のことさえ記憶があいまいだ", "E": "これさえあればほかに何もいらない"}, "a": "C"}, {"q": "今日はとてもおだやかだ", "choices": {"A": "明日は日曜日だ", "B": "あの建物は立派だ", "C": "これは私の学校だ"}, "a": "B"}, {"q": "頭角をあらわす", "choices": {"A": "哀悼の意をあらわす", "B": "舞台に姿をあらわす", "C": "変化を図であらわす", "D": "英語で作品をあらわす", "E": "長年の功労をあらわす"}, "a": "B"}, {"q": "完成の日が待たれる", "choices": {"A": "先生に叱られる", "B": "大会が開かれる", "C": "皆に激励される", "D": "魚がよく釣れる", "E": "昔のことがしのばれる"}, "a": "E"}, {"q": "分母をはらう", "choices": {"A": "会費をはらう", "B": "垣根をはらう", "C": "犠牲をはらう", "D": "下宿をはらう", "E": "右足をはらう"}, "a": "B"}, {"q": "あのような人を名人と言う", "choices": {"A": "昔は海だったという", "B": "目は口ほどに物を言う", "C": "親のいうことは聞くものだ", "D": "きらいというわけではない", "E": "特技というほどのものでもない", "F": "出かけようというときに邪魔が入った"}, "a": "E"}, {"q": "あたりが暗くなってきた", "choices": {"A": "会社から歩いてきた", "B": "食事は済ませてきた", "C": "何となくわかってきた", "D": "チャンスがめぐってきた", "E": "今日まで研究を続けてきた"}, "a": "C"}, {"q": "見聞したところを述べる", "choices": {"A": "今着いたところです。", "B": "信じるところを貫く", "C": "良いところを伸ばす", "D": "ところを得て活躍する。", "E": "訪ねたところ留守だった"}, "a": "B"}, {"q": "昔のことが思い出される", "choices": {"A": "塔が倒れる", "B": "吉報が待たれる", "C": "問題が出される", "D": "子供でも登れる", "E": "荒波におそわれる"}, "a": "B"}, {"q": "捜査本部を置く", "choices": {"A": "本人", "B": "本名", "C": "本当", "D": "本流", "E": "本番"}, "a": "D"}, {"q": "こぼれんばかりの笑顔を見せた", "choices": {"A": "一日中寝てばかりいる", "B": "高いものばかり身につける", "C": "出かけるばかりにしておまちします", "D": "儲け話にのったばかりに、損をした", "E": "今ついたばかりで、まだ荷を解いていない"}, "a": "C"}, {"q": "とにかく頭数だけはそろえておいてくれ", "choices": {"A": "頭が古い", "B": "頭を悩ます", "C": "頭金を納める", "D": "頭割りにする", "E": "頭打ちになる"}, "a": "D"}, {"q": "映像を電波にのせる", "choices": {"A": "足をペダルにのせる", "B": "一億の大台にのせる", "C": "聴衆を音楽にのせる", "D": "名刺を名簿にのせる", "E": "販売ルートにのせる"}, "a": "E"}, {"q": "別れがつらい", "choices": {"A": "夏が来る", "B": "鐘がなる", "C": "風が吹く", "D": "電車が通る", "E": "英語ができる"}, "a": "E"}, {"q": "勇気がわく", "choices": {"A": "湯がわく", "B": "麹《コウジ》がわく", "C": "議論がわく", "D": "非難がわく", "E": "場内がわく"}, "a": "D"}, {"q": "そうとばかりは言えない", "choices": {"A": "彼は勉強ばかりしている", "B": "とびあがらんばかりに喜ぶ", "C": "私が忘れたばかりに迷惑をかけた", "D": "50メートルばかり行ったところにある", "E": "出かけるばかりのところに行きあわせた"}, "a": "A"}, {"q": "独身で通す", "choices": {"A": "歩き通す", "B": "話を通す", "C": "客間に通す", "D": "予算案を通す", "E": "小型車のみ通す"}, "a": "A"}, {"q": "安くテ良い品を買う", "choices": {"A": "雨が降っている", "B": "見て見ぬふりをする", "C": "暗くてよく見えない", "D": "起きて三回顔を洗う", "E": "面白くてためになる"}, "a": "E"}, {"q": "身の程知らず", "choices": {"A": "身に余る光栄", "B": "身につまされる", "C": "身から出たさび", "D": "身を粉にして働く", "E": "身をもって体験する", "F": "身をきられるような思い"}, "a": "A"}, {"q": "どうしたわけか彼は来なかった", "choices": {"A": "弁解するわけではない", "B": "わけのわからない言葉", "C": "それならわけなくできる", "D": "承知するわけにはいけない", "E": "遅刻したわけを言いなさい"}, "a": "E"}, {"q": "夢を持つ", "choices": {"A": "意義を持つ", "B": "関心を持つ", "C": "仕事を持つ", "D": "交渉を持つ", "E": "責任を持つ", "F": "所帯を持つ"}, "a": "B"}, {"q": "つまらぬ意地をはる", "choices": {"A": "相手のほおをはる", "B": "表彰台で胸をはる", "C": "低気圧が勢力をはる", "D": "プールに水をはる", "E": "あれもこれもと欲をはる"}, "a": "E"}, {"q": "人通りが少ない", "choices": {"A": "通りを横切る", "B": "風の通りが悪い", "C": "一通り目を通す", "D": "習った通りに作る", "E": "おっしゃる通りです", "F": "三通りの方法がある"}, "a": "B"}, {"q": "みるもの聞くものみな珍しい", "choices": {"A": "あやしいとみる", "B": "じっと手をみる", "C": "医者が患者をみる", "D": "人物をみる目がある", "E": "読んでみると面白い"}, "a": "B"}, {"q": "敷地に柵をまわしてください", "choices": {"A": "蛇口をまわしてください", "B": "連絡は早くまわしてください", "C": "人を2人ほどまわしてください", "D": "私を受付係にまわしてください", "E": "リボンは二重にまわしてください"}, "a": "C"}, {"q": "君の経験については問うまい", "choices": {"A": "いくらなんでも行くまい", "B": "今年の冬は雪は降るまい", "C": "二度と失敗は繰り返すまい", "D": "わからないはずはあるまい", "E": "これほど心強い味方もいるまい", "F": "名人といえどもこれはできまい"}, "a": "C"}, {"q": "果報は寝て待て", "choices": {"A": "渡して帰る", "B": "書いて覚える", "C": "高くて買えない", "D": "ずっと見ている", "E": "安くておいしい"}, "a": "B"}, {"q": "仕事に幅をもたせる", "choices": {"A": "道幅を測る", "B": "声に幅がある", "C": "世間に幅をきかせる", "D": "人間に幅ができる", "E": "積み上げ幅が大きい"}, "a": "D"}, {"q": "電話なり手紙なりで知らせる", "choices": {"A": "私なりの解釈で話す", "B": "何なりと言いなさい", "C": "すぐ人の言うなりになる", "D": "顔を見るなり叱りつける", "E": "曲がりなりにも店を構える"}, "a": "B"}, {"q": "速達で手紙を出す", "choices": {"A": "会合に顔を出す", "B": "先方に使いをだす", "C": "受付で名刺を出す", "D": "早急に結論を出す", "E": "ポケットからハンカチを出す"}, "a": "B"}, {"q": "箱の中に入っている", "choices": {"A": "雨の中を歩いていく", "B": "表を中にしてたたむ", "C": "人の心の中はわからない"}, "a": "C"}];
+const FILLINS_TC = [{"q": "もしも生物が進化の過程で（　C　）を生み出せなかったとすれば、地球上に最初に出現した生物はそれと同じものしか繁殖できず、適者生存もなく、環境の激変や外界の致死性要因ですべて絶滅していた可能性が高い。", "choices": {"A": "子孫", "B": "遺伝子", "C": "多様性", "D": "細胞分裂", "E": "免疫システム", "F": "適切な生存環境"}, "a": "C", "num": 1, "kind": "single"}, {"q": "経済学の視点で犯罪を考えるとき、犯罪者は損得を合理的に判断して行動すると想定する。そのため犯罪を（　F　）方策としては、犯罪から得られる便益を減らし、露見した時の損失を増やす事が重要になる。懲罰を重くし、罰金や社会的制裁の比重を高めることである。", "choices": {"A": "軽減する", "B": "処罰する", "C": "追求する", "D": "批判する", "E": "撲滅する", "F": "抑止する"}, "a": "F", "num": 2, "kind": "single"}, {"q": "19世紀末、土に有用微生物を肥料として与え、作物生産を高めようという企業的試みが世界各地で起こった。微生物肥料の工場生産である。しかし、（　B　）微生物は、いくら土に添加してみても急速に死滅することが多く、この取り組みは相次いで失敗した。", "choices": {"A": "あらゆる有用な", "B": "生産性を高める", "C": "有用性を失った", "D": "人工的に培養した", "E": "土壌から採集した 4. 国王や貴族によって私有化、占有され、( 　　)…", "F": "理想的"}, "a": "B", "num": 3, "kind": "single"}, {"q": "熱力学的な状況変数には、体積または質量に比例する「示量性」の変数と、温度や圧力のように、体積または質量によらない「示強性」の変数とがある。前者は（　①　）で、同じ量を足し合わせると2倍になるが、後者は同じ（　②　）のぬるま湯を注ぎ足しても熱湯にならないように、非加算的である。", "choices": {"A": "①加算的②量", "B": "①加算的②温度", "C": "①示強的②量", "D": "①示強的②温度", "E": "①示量的②量", "F": "①示量的②温度"}, "a": "B", "num": 5, "kind": "double"}, {"q": "数値表記で空位を示す記号は紀元前から複数の文明で見られるが、（　①　）としては、7世紀のインドのブラマーグブタが初めて「いかなる数にゼロを乗じても結果は常にゼロである。いかなる数にゼロを加減してもその値に変化がおこらない」とし、これがゼロの（　②　）として広まった。", "choices": {"A": "①演算対象②概念", "B": "①演算対象②記号", "C": "①演算対象②数字", "D": "①四則計算②概念", "E": "①四則計算②記号", "F": "①四則計算②数字"}, "a": "A", "num": 6, "kind": "double"}, {"q": "「教養崩壊」、それは「学力崩壊」とは違った問題である。一方は（　D　）できるような基礎学力の問題という前提で議論されている。しかし教養は数値化できるような能力の問題ではない。", "choices": {"A": "相対化", "B": "単純化", "C": "抽象化", "D": "定量化", "E": "明確化"}, "a": "D", "num": 7, "kind": "single"}, {"q": "相手の言葉をこちらの言葉に対置させて考える翻訳という営みが、いま著しく弱体化している。それとひきかえに、身のまわりに（　D　）がむやみやたらに増えてきた。", "choices": {"A": "新語", "B": "擬態語", "C": "ひらがな", "D": "カタカナ語", "E": "電子メール", "F": "ジェスチャー"}, "a": "D", "num": 8, "kind": "single"}, {"q": "いわゆる刑事犯に制裁を科すことには、道義的責任を追求するという倫理的意義がある。一方、行政上の違反に対して、営業許可や運転免許の取り消し、反則金や罰金などの制裁を設ける理由としては、もっぱら、その威嚇的作用によって、（　A　）することであるといえよう。", "choices": {"A": "公共の福祉を実現", "B": "個人の権利を保障", "C": "住民の意志を反映", "D": "義務の不履行を予防", "E": "責任の範囲を明確化", "F": "行政の監視機能を強化"}, "a": "A", "num": 9, "kind": "single"}, {"q": "幼児は通常、おとなと一緒に行動しているから、文字を知らなくても直接不便を感じるわけではないが、おとなの行動を観察することをとおして、文字を読むことの（　D　）を知っていく。", "choices": {"A": "感覚", "B": "感動", "C": "技能", "D": "効用", "E": "長所", "F": "役割"}, "a": "D", "num": 10, "kind": "single"}, {"q": "日本の製造業の強みのひとつに、作り手と使い手が商品を介して対話しながら互いが互いを育て、高め合うという関係がある。例えば、日本の鉄鋼業が世界最高の技術力を持つ最大の理由は、日本には鉄鋼のユーザーとして自動車、電機など実力があり（　B　）企業が存在することにある。", "choices": {"A": "現場主義を貫く", "B": "要求水準が高い", "C": "好業績をあげている", "D": "トラブルに対応できる", "E": "国際分業を得意とする", "F": "グローバルな視点をもった"}, "a": "B", "num": 11, "kind": "single"}, {"q": "ティッシュペーパーや洗剤など生活に密着した日用品の普及は生活の（　B　）を推し進めたが、やがて人びとは、日用品のひとつひとつを検討して選ぶことによって、自分のライフスタイルが浮かび上がってくることを発見した。そこに新たに、こだわり商品とか付加価値商品という存在が出現する。", "choices": {"A": "簡略化", "B": "効率化", "C": "多様化", "D": "同質化", "E": "特殊化", "F": "複雑化"}, "a": "B", "num": 12, "kind": "single"}, {"q": "硬貨は（　①　）が基本的に現物の地金の（　②　）と同等であることが重要である。後者があまりにも大きくなると地金として売って儲けることができるからだ。", "choices": {"A": "①製造費用②価値", "B": "①製造費用②加工料", "C": "①製造費用②販売量", "D": "①表示価格②価値", "E": "①表示価格②加工料", "F": "①表示価格②販売量"}, "a": "D", "num": 13, "kind": "double"}, {"q": "生命は物理化学的な枠組みの中に自らを従わせつつも単に、その熱運動に身をゆだねているわけではなく、そこから複雑な秩序を生み出している。その秩序のありようが貝殻を小石から峻別しているのだ。しかも、生きている頃は、成長に応じてその貝殻も　も拡大できる。つまり、その秩序は（　B　）なものなのだ。", "choices": {"A": "知的", "B": "動的", "C": "美的", "D": "法則的", "E": "物理学的"}, "a": "B", "num": 14, "kind": "single"}, {"q": "（　B　）ということには、とても深い意味がある。そうするためには、まず、考えていることを整理しなければならない。思考を整理して書き出すだけで、問題が解決してしまうこともある。そればかりか、自分の目標が具体的に表現され、実現するための第一歩を踏み出すことになる。", "choices": {"A": "解決する", "B": "書き出す", "C": "実現する", "D": "整理する", "E": "踏み出す", "F": "目標をもつ"}, "a": "B", "num": 15, "kind": "single"}, {"q": "「荘厳する」とは、本来、知恵や福徳などの善美をもって仏国土や仏・菩薩の身を飾ることをいう。金・銀・瑠璃などの七宝で荘厳されたまばゆいばかりの浄土のイメージは、菩薩や仏堂あるいは教典を美しく厳かに飾りたてることによって（　D　）された。", "choices": {"A": "芸術化", "B": "視覚化", "C": "装飾化", "D": "抽象化", "E": "通俗化", "F": "普遍化"}, "a": "D", "num": 16, "kind": "single"}, {"q": "普遍性と同一性の発見は、おそらくそれ自体は祝福されるべき事態だと思います。なによりもそれは、孤独や孤立や絶望に対処するための、最も有効な手段です。（　E　）と考えて気が楽になるのは、こうした場合です。", "choices": {"A": "人は人だから", "B": "自分にかぎっては", "C": "自分は特別だから", "D": "自分なんかどうでも", "E": "だれでもみんなある程度は"}, "a": "E", "num": 17, "kind": "single"}, {"q": "サイエンスは「全体の構造・性質は部分の相互作用が演出する」という。いわゆる要素還元論である。だから（　C　）を求めて原子から素粒子にたどり着いたのだ。", "choices": {"A": "全体の実態", "B": "全体の縮小", "C": "全体の部分", "D": "部分の拡大", "E": "部分の部分", "F": "部分の作る全体"}, "a": "C", "num": 18, "kind": "single"}];
+const FILLINS_SPI = [{"q": "フランス革命後制定されたメートル法は、子午線の長さの4000万分の1を基本単位とする。それまでは度量衡の制定の権利は領主にあったため、一存で変更することができた。自然に基づくメートル法は、不変で公正な尺度として□□□を排除できると考えられたのであった。", "choices": {"A": "可変性", "B": "恣意性", "C": "自発性", "D": "主体性", "E": "人間性", "F": "非科学性"}, "a": "B"}, {"q": "翻訳される言語の表現力が、受容する言語の表現力を圧倒的に上回っている場合は、翻訳は成立しないであろう。受容する言語に□□□語彙がなければ、それを直接、間接に□□□しか手はない。日本語の場合、多くの西洋外来語がそうであった。", "choices": {"A": "関連する 借用する", "B": "関連する 翻訳する", "C": "共通する 借用する", "D": "共通する 翻訳する", "E": "対応する 借用する", "F": "対応する 翻訳する"}, "a": "F"}, {"q": "読書の巧者にとって一冊の本は単に一冊の本であるにとどまらず、他の本との関係の□□□からなるヴァーチャルな読書空間への入り口であり、中継地としての結節点のひとつであり、場合によっては終着点となることもある。", "choices": {"A": "一端", "B": "原点", "C": "網の目", "D": "ベース", "E": "モデル", "F": "ポイント"}, "a": "C"}, {"q": "日本の教育の問題点というとすぐ独創性がいわれるようだが、独創的かどうかは結果論のはずである。□□□というのではない。しかし、独創にあまりに注目しすぎた教育は、考えものである。", "choices": {"A": "教育が重要である", "B": "教育が重要でない", "C": "結果が重要である", "D": "結果が重要でない", "E": "独創が重要である", "F": "独創が重要でない"}, "a": "F"}, {"q": "日本の森林の約4割は□□□であり、人の手が適切に加えられなければ健全に保てず、環境保全の機能を十分に発揮できない。しかし木材価格の低迷などにより、その□□□が放棄されていることがおおきな問題になっている。", "choices": {"A": "原生林 開発", "B": "原生林 管理", "C": "私有林 開発", "D": "私有林 管理", "E": "人工林 開発", "F": "人工林 管理"}, "a": "F"}, {"q": "普遍性と同一性の発見は、おそらくそれ自体では祝福されるべき事態だと思います。なによりそれは、孤独や孤立や絶望に対処するための、最も有効な手段です。□□□と考えて気が楽になるのは、こうした場合です。", "choices": {"A": "人は人だから", "B": "自分にかぎっては", "C": "自分は特別だから", "D": "自分なんかどうでも", "E": "だれでもみんなある程度は"}, "a": "E"}, {"q": "幼児は通常、おとなと一緒に行動しているから、文字を知らなくても直接不便を感じるわけではないが、おとなの行動を観察することをとおして、文字が読めることの□□□を知っていく", "choices": {"A": "感覚", "B": "感動", "C": "技能", "D": "効用", "E": "長所", "F": "役割"}, "a": "D"}, {"q": "日本の製造業の強みのひとつに、作り手と使い手が商品を介して対話をしながら互いが互いを育て、高め合うという関係がある。たとえば、日本の鉄鋼業が世界最高の技術力をもつ最大の理由は、日本には鉄鋼のユーザーとして自動車、電機など、実力があり□□□企業が存在することにある。", "choices": {"A": "現場主義を貫く", "B": "要求水準の高い", "C": "好業績をあげている", "D": "トラブルに対応できる", "E": "国際分業を得意とする", "F": "グローバルな視点を持った"}, "a": "B"}, {"q": "□□□ということには、とても深い意味がある。そうするためには、まず、考えていることを整理しなければならない。思考を整理して書き出すだけで、問題が解決してしまうこともある。そればかりか、自分の目標が具体的に表現され、実現するための第一歩を踏み出すことになる。", "choices": {"A": "解決する", "B": "書き出す", "C": "実現する", "D": "整理する", "E": "踏み出す", "F": "目標をもつ"}, "a": "C"}, {"q": "生命は、物理学的な枠組みの中に自らを従わせつつも、単に、その熱運動に身をゆだねているわけではなく、そこから複雑な秩序を生み出している。その秩序のありようが貝殻を小石から峻別しているのだ。しかも生きている貝は、成長に応じてその貝殻の文様をも拡大できる。つまりその秩序は□□□なものなのだ。", "choices": {"A": "知的", "B": "動的", "C": "美的  貝殻と小石の対比", "D": "法則的", "E": "物理学的"}, "a": "D"}, {"q": "熱力学的な状況変数には、体積または質量に比例する「示量性」の変数と、温度や圧力のように、体積または質量のよらない「示強性」の変数とがある。前者は□□□で、同じ量を足し合わせると2倍になるが、後者は同じ□□□のぬるま湯を注ぎ足しても熱湯にはならないように、非加算的である。", "choices": {"A": "加算的 量", "B": "加算的 温度", "C": "示強的 量", "D": "示強的 温度", "E": "示量的 量", "F": "示量的 温度"}, "a": "B"}, {"q": "硬貨は□□□が基本的に現物の地金の□□□と同等でることが重要である。後者があまりに大きくなると地金として売って儲けることができるからだ", "choices": {"A": "製造費用 価値", "B": "製造費用 加工量", "C": "製造費用 販売量", "D": "表示価格 価値", "E": "表示価格 加工量", "F": "表示価格 販売量"}, "a": "D"}, {"q": "いわゆる刑事犯に制裁を科すことには、その道義的責任を追及するという倫理的意義がある。一方、行政上の違反に対して、営業許可や運転免許の取り消し、反則金や罰則などの制裁を設ける理由は、もっぱら、その威嚇的作用によって、□□□することにあると言えよう。", "choices": {"A": "公共の福祉を実現", "B": "個人の権利を保障", "C": "住民の意思を反映", "D": "義務の不履行を予防", "E": "責任の範囲を明確化", "F": "行政の監視機能を強化"}, "a": "F"}, {"q": "鳩を単独で飼育していると、その鳩は時期が来ても所定の性行動を行わない。しかし飼育室に鏡を入れておくと、それだけで性欲を発現させるようになる。自分の鏡像を見ることが、□□□ことから得られる何らかの効果を、代行する形で鳩に与えるのである。", "choices": {"A": "野生の鳥として育つ", "B": "異性から求められる", "C": "発情の時期を迎える", "D": "他の鳩と共に生きる", "E": "多くの人に観賞される"}, "a": "D"}, {"q": "情報は細分化されていればいるほど使いやすい。そのほうが、情報を得るときにも、組み合わせるときにも扱いやすい。結果として情報は□□□し、体系的な「知恵」ではなく、分裂した独立の「知識」のみが存在していくことになる。", "choices": {"A": "共通化", "B": "集合化", "C": "断片化", "D": "統一化", "E": "独立化", "F": "二極化"}, "a": "C"}, {"q": "科学を発展させるためには研究開発のための資源を社会に求めなければならないが、その量は□□□の限界に迫りつつある。その結果パイの奪い合いをせざるを得なくなってきている。", "choices": {"A": "倫理上許されるもの", "B": "社会が供給できるもの", "C": "人類が開発できるもの", "D": "国家単位で管理できるもの", "E": "科学の発展に期待できるもの", "F": "研究テーマとして考えられるもの"}, "a": "B"}, {"q": "段取りの大切さは証明問題でも料理でも同様である。証明問題で証明すべき問題は指示されている。それが料理でいうと料理の□□□である。証明には仮説があり、これが料理でいうと素材であろう。それを適切なプロセスで料理して最終的に美味しい料理ができる。", "choices": {"A": "腕前", "B": "道具", "C": "味付け", "D": "完成形", "E": "献立表", "F": "調理法"}, "a": "E"}, {"q": "「荘《ショウ》厳する」とは、本来、知恵や福徳などの善美を持って仏国土や仏、菩薩の身を飾ることを言う。金、銀、瑠璃などの七法で荘厳されたまばゆいばかりの浄土のイメージは、仏像や仏堂あるいは経典を美しく厳かに飾り立てることによって□□□された。", "choices": {"A": "芸術化", "B": "視覚化", "C": "装飾化", "D": "抽象化", "E": "通俗化", "F": "普遍化"}, "a": "E"}, {"q": "もしも生物が進化の過程で□□□を生み出せなかったとすれば、地球上に最初に出現した生物はそれと同じものしか繁殖できず、適者生存もなく、環境の激変や外界の致死性要因ですべて絶滅していた可能性が高い。", "choices": {"A": "子孫", "B": "遺伝子", "C": "多様性", "D": "細胞分裂", "E": "免疫システム", "F": "適切な生存環境に"}, "a": "C"}, {"q": "民族性や国民性が□□□に形成されているというと意外に思う人が多いかもしれない。しかし、どんな人種の間にも□□□な知能の差や性格の差はなく、歴史や気候、社会構造の差が国民性を生むのである。", "choices": {"A": "客観的 主観的", "B": "主観的 客観的", "C": "後天的 先天的", "D": "先天的 後天的", "E": "独創的 普遍的", "F": "普遍的 独創的"}, "a": "C"}, {"q": "人類の生活が環境に及ぼす負荷を土地面積で表すエコロジカル フットプリントは、国別に食料を生産する耕作地、漁業を行う海域、二酸化炭素を吸収する森林地などの面積を足して算出する。食料や資源を□□□して消費した場合は、その生産に要した□□□も加算する。", "choices": {"A": "輸出  費用", "B": "輸出 面積", "C": "輸出 労働力", "D": "輸入 費用", "E": "輸入 面積", "F": "輸入 労働力"}, "a": "E"}, {"q": "数値表記で空位を示す記号は紀元前から複数の文明で見られるが、＝＝①＝＝としては7世紀のインドのブラマーグブタが初めて「いかなる数にゼロを乗じても結果は常にゼロである。いかなる数にゼロを加減してもその値に変化がおこらない」とし、これがゼロの＝＝②＝＝として広まった。", "choices": {"A": "演算対象 概念", "B": "演算対象 記号", "C": "演算対象 数字", "D": "四則演算 概念", "E": "四則演算 記号", "F": "四則演算 数字"}, "a": "A"}, {"q": "すべてが流動化して液状化している今日、□□□は不安定性の増大と表裏一体である。個人は束縛から解放され自由に移動できることを喜びつつも、どこにおのれの居場所があるのか必死に探してもいる。", "choices": {"A": "個人の自律性", "B": "組織への従属", "C": "他者との関係", "D": "家族関係の気薄化", "E": "自由と選択の拡大", "F": "適切な対処方の発見"}, "a": "E"}, {"q": "だれでも知っている『赤ずきん』という童話は、元の形では赤ずきんはオオカミに食べられて終わってしまう。そういう□□□が、ある意味で文学のエッセンスのひとつである。文学はそういう独自の表現においてかえって人間の苦境を救うのである。", "choices": {"A": "希望", "B": "ロマン", "C": "意外性", "D": "救いのなさ", "E": "きれいごと", "F": "センチメンタル"}, "a": "D"}, {"q": "シベリア気団などの『気団』というのは、水平方向にほぼ一様な性質をもった空気の塊のことである。性質の違う気団の境は天気図上ではひとつの線として表されるが、□□□面となっており、これを全面という。", "choices": {"A": "科学的にいえば", "B": "経験的にいえば", "C": "巨視的にみれば", "D": "微視的に見れば", "E": "平面的に見れば", "F": "立体的に見れば"}, "a": "F"}, {"q": "多くの人は、要らないものを捨てればすっきりする。しかしこれは、処分の□□□が快楽だということであって、処分という行為自体が快楽かどうかという話とは異なる。", "choices": {"A": "専門的", "B": "客観的", "C": "論理的", "D": "実証的", "E": "部分的", "F": "全体的"}, "a": "D"}, {"q": "科学は自然の対象を観測し、そこにある種の＝＝＝を認識し、そこから法則を確立していくわけであるが、その法則は実験におって確かめるというプロセスを絶対的に必要とする。", "choices": {"A": "可能性", "B": "規則性", "C": "客観性", "D": "相関性", "E": "妥当性", "F": "論理性"}, "a": "B"}, {"q": "経済学の視点で犯罪を考えるとき、犯罪者は損得を合理的に判断して行動すると想定する。そのため犯罪を□□□方策としては、犯罪から得られる便益を減らし、露見したときの損失を増やすことが重要になる。懲罰を重くし、罰金や社会的制裁の比重を高めることである。", "choices": {"A": "軽減する", "B": "処罰する", "C": "追求する", "D": "批判する", "E": "撲滅する", "F": "抑止する"}, "a": "F"}, {"q": "私たちは普通、メディアは「ニュースを伝達してくれる装置」だと考えている。しかし、実際にはメディアは「情報を過剰に伝えないための装置」である。正確に言えば、□□□ニュースを排除するために報道機関は存在している。", "choices": {"A": "不快な", "B": "不必要な", "C": "不正確な", "D": "影響力のない", "E": "興味をひかない"}, "a": "B"}, {"q": "アイロニーとは単にまじめでないものをまじめに受け取るのではなく、建前上まじめとされているものを、その当の立場以上に、文字通りまじめに受け取る事によって、その立場の□□□を逆に暴露するのである。", "choices": {"A": "あいまいさ", "B": "すばらしさ", "C": "真のまじめさ", "D": "難しさの程度", "E": "不真面目さ加減", "F": "もとにある深刻さ"}, "a": "E"}, {"q": "地球上の気流は一般に赤道近辺の低緯度では上昇、極地近くの高緯度では下降している。火山の噴火は□□□、ガスが気流によってより広く世界にばら撒かれるため、それが日傘のように太陽光を妨げて地球の温度を下げる可能性がある。", "choices": {"A": "北半球で起こった方が", "B": "南半球で起こった方が", "C": "高緯度地域で起こった方が", "D": "低緯度地域で起こった方が", "E": "起こった場所に関わらず"}, "a": "D"}, {"q": "生物多様性を脅かすものとしては、人間活動や開発による第一の危機、また第一とは逆に耕作放棄など□□□による第二の危機、さらに人間が持ち込んだ外来種などによる第三の危機が知られている。しかし、地球温暖化の問題ほどには理解されていないのが実情だ。", "choices": {"A": "環境保全の失敗", "B": "企業活動の影響", "C": "気候変動の拡大", "D": "経済効率の優先", "E": "天然資源の枯渇", "F": "人間活動の縮小"}, "a": "F"}, {"q": "和銅銭や古代中国の銅銭は、溶けた金属を鋳型に流し込む鋳造技法で作られた。量目には多少のばらつきが生じる。一方、ギリシア、ローマ、西アジアなどの貨幣は一定量の金属塊を型でプレスして文様を刻印する鍛造技法で作られた。貨幣に□□□が求められたのである。", "choices": {"A": "権威", "B": "量産", "C": "均一さ", "D": "芸術性", "E": "豪華さ", "F": "普遍性"}, "a": "C"}, {"q": "患者側が医師を自由に選択できるフリーアクセスは日本の医療制度の長所であるとよく指摘されるが、□□□がない中では、選んだ医師が適切かどうか把握する手段がなく危険でもある。", "choices": {"A": "医師間の交流", "B": "医師の育成体系", "C": "医療体制の開示", "D": "医療保険の改正", "E": "医師の評価制度", "F": "医療事故の防止対策"}, "a": "E"}, {"q": "人間には顔を見せると活性化する「顔細胞」と呼ばれる脳神経があり、また新生児でも顔に対して他の物体に比べて興味を示す度合いが高いことから、顔を認識する□□□なシステムが存在しているらしいとされている。", "choices": {"A": "過渡的", "B": "機械的", "C": "規則的", "D": "後天的", "E": "初歩的", "F": "生得的"}, "a": "F"}, {"q": "本能は動物が外部の変化に対して行う先天的な反応形式で、本能の□□□行動は学習のみによる行動である。", "choices": {"A": "一部である", "B": "延長にある", "C": "対極にある", "D": "発現である", "E": "抑制である"}, "a": "C"}, {"q": "存在感があって人を惹きつける魅力的なリーダーには、スピーチがうまいという特徴があり、□□□を作るのも上手だ。それが決めのセリフとなり、大勢の人へのアピール力が増して、さらに人気が上がるという相乗効果になる。", "choices": {"A": "グラフ", "B": "コメント", "C": "ビジョン", "D": "キャッチコピー", "E": "シンボルマーク", "F": "セルフイメージ"}, "a": "D"}];
+const ORDERINGS_TC = [{"q": "明治の（1）（2）（3）（4）（5）圧倒的に多かった　　（4）は何か", "choices": {"A": "旧士族の出身者が", "B": "このプロセスを経て", "C": "学制の確立であるが", "D": "官僚になっていったのは", "E": "革命的システムの変更のひとつが"}, "order": "ECBDA", "ans_pos": 4, "a": "D", "num": 1}, {"q": "ジャガイモのふるさとアンデス山脈の（1）（2）（3）（4）（5）作られている　　（1）は何か", "choices": {"A": "チューニュと呼ばれる乾燥イモが", "B": "今もジャガイモが盛んに栽培され", "C": "標高4000メートルを超す村々では", "D": "中央に位置するペルーやボリビアの", "E": "気温変化を利用して水分を除去した"}, "order": "DCBEA", "ans_pos": 1, "a": "D", "num": 2}, {"q": "幼いころの記憶には実際は、（1）（2）（3）（4）（5）想起されるものがある。　（5）は何か", "choices": {"A": "積み重なった結果として", "B": "自らの記憶であるかのように", "C": "映像をみせられたりすることが", "D": "記憶に残っていないできごとが", "E": "家族から繰り返し話を聞かされたり"}, "order": "DECAB", "ans_pos": 5, "a": "B", "num": 3}, {"q": "日本では、（1）（2）（3）（4）（5）予報のペースとなっている。　(2)", "choices": {"A": "現在はコンピュータを用いて", "B": "定量的に表現する量的予報は", "C": "気温や降水量などの気象要素を", "D": "昭和10年代から研究が始まっていたが", "E": "大気の状態を予測する数値予測が"}, "order": "CBDAE", "ans_pos": 2, "a": "B", "num": 4}, {"q": "無作為に対象者を選ぶ（1）（2）（3）（4）（5）傾向がある。　（2）", "choices": {"A": "より極端な結果が出る", "B": "世論調査と比較すると", "C": "インターネット調査の場合は", "D": "特定のテーマに関心をもって", "E": "サイトを閲覧した人が回答する"}, "order": "BDECA", "ans_pos": 2, "a": "D", "num": 5}, {"q": "絵というものが（1）（2）（3）（4）（5）常識である。　　（5）", "choices": {"A": "画家とは多くの場合", "B": "実は共同作業の結果で", "C": "絵を作る監督だったことは", "D": "絵を描く芸術家であるよりも", "E": "画家が工房を持つ職人だった時代の"}, "order": "BADCE", "ans_pos": 5, "a": "E", "num": 6}, {"q": "政府は（1）（2）（3）（4）（5）重みがある。　（4）", "choices": {"A": "国民による", "B": "政府支出と同等以上の", "C": "民主主義の原則で言えば", "D": "義援金や支援金などの寄付は", "E": "市民社会の代理であるという"}, "order": "ECADB", "ans_pos": 4, "a": "D", "num": 7}, {"q": "アポロ17号が（1）（2）（3）（4）（5）推測されている　（2）", "choices": {"A": "宇宙飛行士が歩いた跡が", "B": "月の表面に残されているのは", "C": "月に着陸しておよそ40年たっても", "D": "何万年たってもこのままであると", "E": "大気がなく無風なためであることから"}, "order": "CABED", "ans_pos": 2, "a": "A", "num": 8}, {"q": "福祉工学は（1）（2）（3）（4）（5）分野である。　（2）", "choices": {"A": "電子義手など", "B": "人工臓器とは対をなす", "C": "人間の失われた機能を", "D": "手術をせず技術で補うもので", "E": "同じく人間を支援する領域にある"}, "order": "ACDEB", "ans_pos": 2, "a": "C", "num": 9}, {"q": "日本製品の（1）（2）（3）（4）（5）失ってしまう  (3)", "choices": {"A": "技術が", "B": "国際基準を", "C": "海外市場を", "D": "どんなに優秀でも", "E": "獲得できなければ"}, "order": "ADBEC", "ans_pos": 3, "a": "B", "num": 10}, {"q": "免疫抑制剤が筑波山の土の中にいた（1）（2）（3）（4）（5）薬開発の伝統的手法である。", "choices": {"A": "微生物から", "B": "菌が作り出す", "C": "生まれたように", "D": "有用物質を探すのは", "E": "土中の菌を培養して"}, "order": "ACEBD", "ans_pos": 3, "a": "E", "num": 11}, {"q": "赤道方面から（1）（2）（3）（4）（5）海底に沈む  （3）", "choices": {"A": "水分が蒸発して", "B": "周囲の海水より重くなり", "C": "塩分濃度が高くなっており", "D": "海の表面を流れてきた暖流は", "E": "北大西洋で冷やされて体積が収縮すると"}, "order": "DACEB", "ans_pos": 3, "a": "C", "num": 12}, {"q": "法律の制定のためには（1）（2）（3）（4）（5）設定されていなくてはいならない。　(3)", "choices": {"A": "抜かりなく見通され", "B": "処置の仕方があらかじめ", "C": "社会生活において起こりうる", "D": "その成り行きに対する対応が", "E": "さまざまな場合を周到に見て取り"}, "order": "CEDAB", "ans_pos": 3, "a": "D", "num": 13}, {"q": "かつて景観問題といえば（1）（2）（3）（4）（5）景観問題も近年は見られるようになった。　(4)", "choices": {"A": "間の紛争が多かったが", "B": "作品優先の建築家が起こす", "C": "利益優先のデベロッパーと", "D": "住宅地における原色の外壁など", "E": "環境を守ろうとする周辺住民との"}, "order": "CEADB", "ans_pos": 4, "a": "D", "num": 14}, {"q": "テレビは（1）（2）（3）（4）（5）自ら明示する社会的責任がある。", "choices": {"A": "事前に全ての放送を", "B": "検閲部が発達しなかったが", "C": "表現に対する方針や細則を", "D": "チェックすることが難しいため", "E": "即時性を追求するメディアであり"}, "order": "EADBC", "ans_pos": 3, "a": "D", "num": 15}];
+const ORDERINGS_SPI = [{"q": "同素体とは、同じ元素からできているが15243フラーレンやカーボンナノチューブなどがある。", "choices": {"1": "性質の違う単体のことで", "2": "たとえば炭素の同素体には", "3": "新素材として注目されている", "4": "ダイヤモンドと黒鉛のほかに", "5": "その原子配列や結合が異なるため"}, "order": "15243"}, {"q": "記憶されている資料は25143難しい。", "choices": {"1": "どの解釈が", "2": "解釈によって", "3": "見定めることが", "4": "もっとも正しいのかを", "5": "その内容に大きな違いがあり"}, "order": "25143"}, {"q": "かつて景観問題といえば35142景観問題も近年は見られるようになった", "choices": {"1": "間の紛争が多かったが", "2": "作品優先の建築家が起こす", "3": "利益優先のディベロッパーと", "4": "住宅地における原色の外壁など", "5": "環境を守ろうとする周辺住民との"}, "order": "35142"}, {"q": "迷信を信じる人には、何かを体験した時にそれに対して43512傾向がみられるという", "choices": {"1": "それに反する", "2": "証拠を無視する", "3": "その体験を裏付ける", "4": "確率的な判断ができず", "5": "証拠ばかりを求めてしまい"}, "order": "43512"}, {"q": "日本では32415△予報のベースとなっている", "choices": {"1": "現在はコンピュータを用いて", "2": "定量的に表現する量的予報は", "3": "気温や降水量などの気象要素を", "4": "昭和10年代から研究が始まったが", "5": "大気の状態を予測する数値予報は"}, "order": "32415"}, {"q": "アポロ17号が31254推測されている。", "choices": {"1": "宇宙飛行士が歩いた跡が", "2": "月の表面に残されているのは", "3": "月に着陸しておよそ40年たっても", "4": "何万年たってもこのままであると", "5": "大気がなく無風なためであることから"}, "order": "31254"}, {"q": "ストレスということばは、生物学者ハンス・セリエが25431○当時は心の動きはあまり着目されていなかった。", "choices": {"1": "使われ始めたのだが", "2": "刺激の種類に関係なく", "3": "ストレス学説を発表して", "4": "反応とプロセスは同様という", "5": "その刺激に適応していくときの"}, "order": "25431"}, {"q": "化粧は31254○続いている", "choices": {"1": "同時に発生し", "2": "戦争や飢饉などの", "3": "人類の文化的営みと", "4": "一度も途絶えることなく", "5": "生命の維持が困難な時期にも"}, "order": "31254"}, {"q": "馬は聴覚が発達しており53214○距離を測っている。", "choices": {"1": "障害物にあたって", "2": "自分の出した音が", "3": "耳の先を正面に向け", "4": "反射してくるのを聞き", "5": "障害物を飛び越えるときは"}, "order": "53214"}, {"q": "政府は53142○重みがある", "choices": {"1": "国民による", "2": "政府支出と同等以上の", "3": "民主主義の原則でいえば", "4": "義援金や支援金などの寄付は", "5": "市民社会の代理であるという"}, "order": "53142"}, {"q": "白い障子越しの光がやわらかいのは52143○散乱させているからです。", "choices": {"1": "植物の繊維が", "2": "光を通さないうえに", "3": "入射した光を全方向に", "4": "表面に不規則な凹凸をつくり", "5": "和紙がガラスの約10〜30％しか"}, "order": "52143"}, {"q": "日本では歌舞伎や越後上布などが登録されている45231○食文化では初の登録となった。", "choices": {"1": "リストに追加されて", "2": "保護を目的としており", "3": "2010年にはフランス料理が", "4": "ユネスコの無形文化遺産は", "5": "伝統芸能や工芸技術、祭礼等の"}, "order": "45231"}, {"q": "免疫抑制剤が筑波山の土の中にいた13524○薬開発の伝統的手法である。", "choices": {"1": "微生物から", "2": "菌が作り出す", "3": "生まれたように", "4": "有用物質を探すのは", "5": "土中の菌を培養して"}, "order": "13524"}, {"q": "イスの背もたれが13524○使われ方をしている。", "choices": {"1": "脱いだ衣服や", "2": "さまざまなものが", "3": "洗濯物をかけるための", "4": "本来の意図とは異なった", "5": "ハンガーとして使われるように"}, "order": "13524"}, {"q": "積乱雲の内部では23415△瞬間的に大きな放電が起こって雷になる。", "choices": {"1": "電気が生まれるが", "2": "上昇気流と下降気流が", "3": "猛烈な速さで行きかっており", "4": "気流がすれ違うときの衝突や摩擦で", "5": "上下に分極した正と負の電気を中和するため"}, "order": "23415"}, {"q": "人口の減少が24153○問題ではない", "choices": {"1": "それは対応を", "2": "経済や社会に", "3": "人口の減少それ自体の", "4": "悪影響を及ぼすとすれば", "5": "誤ったことによるのであって"}, "order": "24153"}, {"q": "私たちが日常利用する水には35214○これらの元素である", "choices": {"1": "風呂や洗濯の時の", "2": "水の硬度の指標であるが", "3": "さまざまな成分が含まれており", "4": "せっけんカスの原因となるのは", "5": "その中でカルシウムとマグネシウムは"}, "order": "35214"}, {"q": "日本の産業で43251○なっている", "choices": {"1": "31種類のレアメタルの一つと", "2": "各元素の化学的性質の類似から", "3": "17種類の希土類元素からなるが", "4": "先端技術を支えるレアアースは", "5": "レアアースメタルとして一括され"}, "order": "43251"}, {"q": "司法には43251○ある", "choices": {"1": "重要な役割が", "2": "権利を侵害された少数者を", "3": "憲法に違反していないか調査し", "4": "多数決の論理で制定された法律が", "5": "良心と法と証拠に基づいて救済する"}, "order": "43251"}, {"q": "文字をもたないアボリジニが描く24153手段のひとつだった", "choices": {"1": "地図、歴史や", "2": "記号や模様で", "3": "後世に伝える", "4": "構成された絵は", "5": "生活の知恵などを"}, "order": "24153"}, {"q": "竹は炭にすると32154○吸収したりする", "choices": {"1": "放射したり", "2": "遠赤外線を", "3": "健康によい", "4": "有害科学物質を", "5": "住宅資源から出る"}, "order": "32154"}, {"q": "無作為に対象者を選ぶ24531○傾向がある", "choices": {"1": "より極端な結果が出る", "2": "世論調査と比較すると", "3": "インターネット調査の場合は", "4": "特定のテーマに関心をもって", "5": "サイトを閲覧した人が回答する"}, "order": "24531"}, {"q": "高血圧になる要因に42531○その予防に有効である。", "choices": {"1": "促進するので", "2": "適度な有酸素運動や", "3": "ナトリウムの排出を", "4": "塩分のとり過ぎがあるが", "5": "カリウムを含む食材の摂取は"}, "order": "42531"}, {"q": "藻類とは一般に15342○作り出されるきっかけとなった", "choices": {"1": "陸上植物以外で", "2": "現在の地球環境の特徴が", "3": "この藻類の進化の過程で", "4": "酸素やオゾン層が生み出され", "5": "光合成をする生き物のことで"}, "order": "15342"}, {"q": "狂言は32145○娯楽として楽しめる", "choices": {"1": "上品な笑いであるが", "2": "劇中に含まれているのは", "3": "船とともに発展してきた芸能で", "4": "それは現代人にも通用するので", "5": "私たちは狂言を難しい教義ではない"}, "order": "32145"}, {"q": "テレビは51423○自ら明示する社会的責任がある", "choices": {"1": "事前に全ての放送を", "2": "校閲部が発達しなかったが", "3": "表現に対する方針や細則を", "4": "チェックすることが難しいため", "5": "即時性を追及するメディアであり"}, "order": "51423"}, {"q": "絵というものが21435○常識である", "choices": {"1": "画家とは多くの場合", "2": "実は共同作業の結果で", "3": "絵を作る監督だったことは", "4": "絵を描く芸術家であるよりも", "5": "画家が工房をもつ職人だった時代の"}, "order": "21435"}, {"q": "江戸時代を代表する絵師であった円山応挙は31542○イメージが定着したと言われている", "choices": {"1": "彼の描く幽霊には", "2": "消えているものという", "3": "写実的な画風で知られており", "4": "幽霊は腰から下が透けていて", "5": "全て足が無かったところから"}, "order": "31542"}, {"q": "外交とは12543○ことばである。", "choices": {"1": "主権国家が", "2": "自国の国益や安全", "3": "あるいは政策を示す", "4": "政府間で行われる交渉", "5": "そして繁栄を促進するため"}, "order": "12543"}, {"q": "社会の中で23514○道得《道徳》である。", "choices": {"1": "「道《タオ》」であり", "2": "人間の行為には", "3": "一定のモラルがあるが", "4": "この道を会得するのが", "5": "これは老子に言わせれば"}, "order": "23514"}, {"q": "パソコンや携帯電話には51342○ある", "choices": {"1": "人口が集中する都市には", "2": "地上資源と呼ばれることも", "3": "これらが蓄積されているわけで", "4": "鉱山から採掘する地下資源に対し", "5": "多種のメタルが使われているので"}, "order": "51342"}, {"q": "遺伝子の研究によって34215広げる原動力のひとつとなった。", "choices": {"1": "可能になったことが", "2": "これを操作することが", "3": "生体物質の構造や機能が", "4": "分子レベルで解析できるようになり", "5": "ナノテク（超微細技術）の応用範囲を"}, "order": "34215"}, {"q": "福祉工学は13452△分野である。", "choices": {"1": "電子義手など", "2": "人工臓器とは対をなす", "3": "人間の失われた機能を", "4": "手術をせず技術で補うもので", "5": "同じく人間を支援する領域にある"}, "order": "13452"}, {"q": "明治の53241○圧倒的に多かった", "choices": {"1": "旧士族の出身者が", "2": "このプロセスを経て", "3": "学制の確立であるが", "4": "官僚になっていったのは", "5": "革命的システム変更のひとつが"}, "order": "53241"}, {"q": "日本製品の14253○失ってしまう", "choices": {"1": "技術が", "2": "国際標準を", "3": "海外市場を", "4": "どんなに優秀でも", "5": "獲得できなければ"}, "order": "14253"}];
+const LONG_PASSAGES = [{"num": 1, "passage": "地球大気中の酸素と二酸化炭素の濃度を地球初期から現在までたどってみると、ちょうど「X」字型になる。現在のそれぞれのガス濃度を1とすると、地球誕生時には酸素ガスはゼロ。27億年前以降わずかずつ増えはじめ、途中で飛躍的に濃度を増す時期を2回経て現在の21%に到達した。（　　　）、二酸化炭素ガスは地球創世記には現在の1万倍以上の濃度があり、それ以降3回低下する時期を経て現在の0.03%になった。これら、2つのガスの濃度が現在のそれに急速に近づいてきたのは、ここ3億年足らずの間である。この間、海洋および陸上の全生物が絶滅の危機に瀕したことが3度あった。そして3回、低酸素に見舞われた。酸素が現在の21%濃度に到着するまでには長い道のりがあり、二酸化炭素ガスとともに酸素はその濃度を変遷させてきた。そのときの酸素濃度に合わせて生物は適者生存、一度も絶ちえることなく35億年間、生命を継承してきた。", "questions": [{"q": "（　　　）に入るものは", "choices": {"A": "一方", "B": "さらに", "C": "その上", "D": "ちなみに"}, "a": "A", "multi": false}, {"q": "地球誕生時から現在までの酸素と二酸化炭素の関係について正しいものは", "choices": {"A": "いずれも創生期から地球上に存在した", "B": "それぞれの濃度がほぼ同じ時代があった", "C": "ここ3億年ほどそれぞれの濃度は1：1", "D": "創生期には二酸化炭素は酸素のほぼ1万倍の濃度があった"}, "a": "B", "multi": false}, {"q": "文中で述べられていることと合致するもの", "choices": {"A": "酸素の発生と同時に生物が誕生した", "B": "地球誕生以来、全生物の絶滅が3回あった", "C": "地球誕生以来、酸素は一定の割合で濃度を増してきた", "D": "地球創生期以降、二酸化炭素濃度が低下する時期が3回あった"}, "a": "D", "multi": false}]}, {"num": 2, "passage": "ヨーロッパの伝統的な考え方に、人間の生活を「活動的生活」と「観想的生活」に区別する考え方がある。それぞれを自由に敷衍（フエン）してみれば、活動的生活においては、私たちは、社会の中で何らかの役割を負う職業人であり、個人と家族を超える領域に関わるかぎりで広義の公人であり、自らの分野においては（　　　）である。それに対して、生活人として、私人として、また非専門家として生きる私的な領域がある。その領域における活動すべてを、観想的生活という言葉で括ることはできないが、活動的生活の外部で営まれる生活の中で、実用や利害を離れて純粋に事柄をそれ自体として眺め、真相を究明しようとする知的活動が、人間の本性に根ざした欲求であることは否定できない。ゆるやかな意味での観想的生活とは、そのような欲求に基づく知的活動を指すといえるだろう。ところで私たちが、活動的生活において働く場合、そこには実現すべき目標がある。仕事の基本的特徴は合目的性にあり、仕事に意味と価値を与えるには目的なのである。", "questions": [{"q": "（　　）に入るのは", "choices": {"A": "家庭人", "B": "社会人", "C": "職業人", "D": "専門家"}, "a": "D", "multi": false}, {"q": "「活動的生活」における人間について文中で述べられていることは", "choices": {"A": "知的活動に専念している", "B": "公人として考えられる", "C": "実現すべき目標をもっている", "D": "実用や利害とは無関係である"}, "a": "BC", "multi": true}, {"q": "文中で述べられていることと合致するものは", "choices": {"A": "目標は仕事に意味と価値を与える", "B": "活動的生活の中で知的欲求が起こる", "C": "真相を究明しようとする欲求は人間の本性とは関係ない", "D": "人間の私的な領域における活動のすべては観想的生活である"}, "a": "A", "multi": false}]}, {"num": 3, "passage": "手技の熟練は、単なる慣れとは違う。大工の仕事は「勘」が全てだから、口では教えられない、と大工の高橋さんが言うのは、「習うより慣れろ」とは別のことである。仕事になれることは、ある意味では禁物だろう。大工が直面する＜問題＞は、その場その場で限りなく変化し、異なっていく。＜問題＞は、強制されるものだが、大工自身がそれを捉えて引き出さなければ、はっきりした＜問題＞の姿を取らないとも言える。また、その引き出し方が状況にぴったりと当てはまれば、すでに答えは半ば以上出されていると言える。大工の努力は、そのような＜問題＞を引き出して、それに答えることに注がれなければならない。大工の熟練とは、まさにこの努力における熟練なのだ。そこには、熟慮なしの繰り返しは少しもない。ただ、その熟慮が言葉にならない「勘」の領域にある、というまでだろう。問題が新しければ、それに対するすべての回答は新しい。高橋さんは毎朝8時に現れ、「これ、どうすっかなあ」といいながら、働き通して、夕方5時には帰っていく。そうやって、実に見事な［　　］を新たに積み上げていく。", "questions": [{"q": "文中の下線禁物とされる理由は、つぎのうちどれか。あてはまるものをすべて選びなさい。", "choices": {"A": "勘がすべてになるから", "B": "大工仕事に熟練はないから", "C": "経験は全く役に立たないから", "D": "考えずにただ繰り返すことになりがちだから"}, "a": "A", "multi": false}, {"q": "文中の空欄［　］にいれる言葉として、最も適切なのは、つぎのうちどれか。", "choices": {"A": "回答", "B": "熟練", "C": "努力", "D": "問題"}, "a": "B", "multi": false}, {"q": "<問題>について述べられていることは、次のうちどれか。あてはまるもの全てを選びなさい。", "choices": {"A": "その時々の条件で、限りなく変化する", "B": "把握と解決に「勘」は全く役に立たない", "C": "捉えて引き出すことで、はじめて姿を現す", "D": "きちんと把握すれば半ば解決したのと同じである"}, "a": "ACD", "multi": true}]}, {"num": 4, "passage": "未知の大洋の航海に役立つ俯瞰的な世界図が出現するまでには実に長い歳月がかかった。古代の世界図の多くは空想に依存する宗教的世界図であり、陸と海の関係を俯瞰する世界図ではなかった。内陸部で生活する人々が認識できる空間は「生活の場所」とその周辺に限られており、 が帯は空想に頼るしかなかった。俯瞰的でマクロな視点に立つ世界図の作成にはミクロな視点からの地図の存在が前提となった。海上での航海に役立てられるチャート(海図)と陸上での生活から生みだされたマッパ(マップの語源)である。重要なのは陸と海の配置を基礎とするチャートであった。地表の7割を占める海が排除されるマッパは俯瞰的な視点にはつながらなかった。船が往来する海は陸地を（ 　）大空間であり、チャートには「海上の道路」のありかを想起させるための情報の集積が求められた。航海が頻繁になり、交易圏が広がると、複数チャートを組み合わせることで広大な空間を俯瞰的に紡ぎだせることが明らかになった。「海上の道路」は相対化された陸地をパノラマとして連続的に把握することを可能にした。", "questions": [{"q": "文中の（　）に入る語句をえらべ", "choices": {"A": "集積する", "B": "分散する", "C": "絶対化する", "D": "相対化する"}, "a": "D", "multi": false}, {"q": "古代の世界図について文中にあてはまるものをすべて選べ", "choices": {"A": "地表の7割を明らかにした", "B": "マクロな視点に立って作られた", "C": "陸と海の関係を俯瞰するものではなかった", "D": "多くは空間に依存する宗教的なものであった"}, "a": "CD", "multi": true}, {"q": "文中で述べられていることと合致するものを選べ", "choices": {"A": "海上の道路を示す情報はチャートに蓄積された", "B": "世界図出現の前提にはマッパとチャートの存在があった", "C": "世界図作成に重要なのは陸と海の配置を示すチャートであった", "D": "複数のマッパにより陸と海が俯瞰的にとらえられるようになった"}, "a": "ABC", "multi": true}]}, {"num": 5, "passage": "科学とは懐疑主義に基づく方法であり、実証性や再現性がともなっていなければならないことに加えて、もう一つ大切な科学の性質に累積性がある。累積性は科学が科学であるために、もともと備えていなければならない条件などではなかった。むしろ、科学が合理的方法として確立した結果、あとから備えることになってしまった性質だ。科学の仮説は、厳しい検証によってふるいにかけられる。したがって、検証を経て生き残った科学は、少なくともその時点で正しいものだ。そして、新しい観測データや実験事実が積み重なることにより、科学は最新バージョンへと更新される。そのため科学は常に最新のものが一番正しい。（　　）されると言っても、何もかもが新しくなり、古いものが役立たずになって、リセットされてしまうということではない。古いものは、その時点では正しい科学であった。多くの場合、新しい科学は古い科学の上に、それを含むように積み重なってできあがる。古い科学は、特定の条件下で近似的に成り立つ科学として、新しい科学の一部分に組み込まれるのだ。", "questions": [{"q": "文中に述べられていることと合致するものは、つぎのうちどれか。", "choices": {"A": "科学は実証性や再現性をともなう", "B": "科学は懐疑主義の基づく方法である", "C": "厳しい検証を経た科学はその時点では正しい", "D": "科学は累積性により合理的方法として確立した"}, "a": "ABC", "multi": true}, {"q": "文中に述べられていることと合致するものは、つぎのうちどれか。", "choices": {"A": "科学は古くなるとリセットされる", "B": "最新の科学が一番正しいとは限らない", "C": "新しい科学は古い科学を含めて成り立つ", "D": "古い科学もかつては新しい科学であった"}, "a": "CD", "multi": true}]}, {"num": 6, "passage": "世界の3つの大洋は、1本のベルトコンベアでつながっている。メキシコ海流で運ばれた高塩分海水が、冬期の冷却により密度を増し、北大西洋北部のグリーンランド沖で深層へと沈み込む。沈み込んだ海水は、次第に変質し、周りの海水と混合しながら大西洋を南下して（北大西洋深層水）、約1200年をかけてインド洋へ、約1600年後に太平洋で上昇し、表層を経て再び大西洋へと帰ってゆく。その循環時間は放射性炭素から2000年程度と推測された。これらのことは70年代に米国主導で実施されたOCEAN計画（地球化学的手法による海洋の物質循環研究）の革新的成果であった。このダイナミックな循環系が地球の気候そのものを支配し、いわば地球の“エアコン”的な存在になっているとの見方が強い。", "questions": [{"q": "ベルトコンベアの流れとして正しいものは次のうちどれか", "choices": {"A": "大西洋→太平洋→インド洋→（先へ戻る）", "B": "大西洋→インド洋→太平洋→（先へ戻る）", "C": "メキシコ湾→大西洋→太平洋→（先へ戻る）", "D": "メキシコ湾→太平洋→大西洋→（先へ戻る）"}, "a": "B", "multi": false}, {"q": "太平洋で表層に上昇した海水が大西洋で深層に沈み込むまでの時間は、どのくらいと推測されるか。", "choices": {"A": "約400年", "B": "約1200年", "C": "約1600年", "D": "約2000年"}, "a": "A", "multi": false}, {"q": "文中に述べられていることと合致するものは", "choices": {"A": "2000年に放射性炭素により循環時間が推測された", "B": "北大西洋深層水はメキシコ海流で運ばれた高塩分海水である", "C": "海洋の循環系は地球の気候に支配的影響を与えていると見られる", "D": "今から70年前に米国主導で、地球化学的手法による海洋の物質循環研究が実施された"}, "a": "BC", "multi": true}]}, {"num": 7, "passage": "ペルーにはスペイン語のほかにもう2つ、ケチュア語とマイアラ語という公用語がある。これらは、この地域がスペインに征服される以前から話されていた土着の言語である。両者は長期にわたって近接した地域で使われ続けてきてはいるが、文法の面での差異は大きく、系統が同じだという証明はできていない。ケチュア語は南米大陸の広範な地域で使われている、数十もの言語を総称したものだ。その話者数は、全体で600万から800万だと言われており、相当数の話者を擁する有力な言語だと言ってよい。うちペルーには約350万、ボリビアに約170万、エクアドルに約150万の話者がおり、これら3国でケチュア語話者の大部分を占めている。ボリビアは人口約900万人であるが、マイアラ語の話者も約140万人おり、スペイン語との2言語併用者は多くはあっても、（　　）を使用する住民の割合が実に大きい。一方、ペルーの人口は3000万に近いから割合はそれほど高くない。", "questions": [{"q": "文中の（　　）に入る言葉として最も適切なものは", "choices": {"A": "公用語", "B": "スペイン語", "C": "2言語以上", "D": "土着の言葉"}, "a": "D", "multi": false}, {"q": "文中で述べられていることと合致するものは、つぎのうちどれか", "choices": {"A": "ペルーの公用語は2つである", "B": "ケチュア語は衰退しつつある言語である", "C": "ケチュア語は1つの言語を指すものではない", "D": "ケチュア語とマイアラ語は同系統の言語である"}, "a": "C", "multi": false}, {"q": "文中で述べられていることと合致するものは、つぎのうちどれか", "choices": {"A": "ケチュア語話者の大部分はペルーにいる", "B": "ペルーでケチュア語を使用する人は1割もいない", "C": "ケチュア語とマイアラ語の使用地域は近接している", "D": "ボリビアではケチュア語よりマイアラ語の話者の方が多い"}, "a": "C", "multi": false}]}, {"num": 8, "passage": "買物のうえには債権者の所有権が成立しえないというのが日本の中世人の所有意識であった。債権と物権とがそれぞれ独立しており、質地は質流れになったとしても、債務者が返済して請け出そうとしたら、債権者は何年たっていてももとの持ち主にかえさなければならない。貸借による質流れになっても売買や譲与のように所有権は移転せず、質経済が独立して発達しえた。質経済は、商品取引による経済現象よりもゆるやかなものであった。近代の自由市場原理では「売買は賃貸借を破る」として質流れの物権は債務者の同意なしに自動的に債権者のものになった。中世人の社会常識では、買物はいつまでも買物であり、双方の（　　）がないかぎり物権は移動しない。債務者の権利保護の意識が近代社会よりもはるかに強く、債務者と債権者の合意が第一義的に重視された。貨幣の交換でなんでも物権が移動するという自由市場原理とは異質な世界が、中世社会には存在していたことがあきらかである。", "questions": [{"q": "文中の（　　）に入る言葉として最も適切なものは", "choices": {"A": "異論", "B": "合意", "C": "交換", "D": "信頼"}, "a": "B", "multi": false}, {"q": "日本の中世について文中で述べられていることは、つぎのうちどれか。あてはまるものをすべて選びなさい。", "choices": {"A": "債権と物権はそれぞれ独立していた", "B": "質地の扱いは売買された土地と異なっていた", "C": "買物が質流れになると債権者の所有物になった", "D": "質経済は商品取引による経済現象と同様ゆるやかであった"}, "a": "AB", "multi": true}]}, {"num": 9, "passage": "現在の小学校理科学習指導要領では、実験や観察のできないものは教えないという方針になっている。日本での小学校理科は天動説的な「地上から見た天体の動き」の学習だけであるため、太陽が地球の周りを回っているという間違った概念を児童に与えたり、自分が知っている事実と、理科の授業で教えられたこととの間の整合性がとれず、子供が矛盾を抱え込んでしまう可能性が高い。「理科離れ」が指摘されて久しいが、こうしたことが理科を学ぼうという意欲を失わせる原因の一つになっているように感じられる。日本ではこれまで、科学を楽しみ、主体的に生活に取り入れるような科学文化は育成されてこなかった。こうした点も学校教育に影響しているようだ。これからは、天文教育も、観察、実験主義から、宇宙像の理解、科学的世界観の育成に重心を移していくべきである。それが理科離れ防止につながるはずだ。", "questions": [{"q": "現在の小学校理科学習指導要領で言われている内容は、つぎのうちどれか。", "choices": {"A": "地球は自転している", "B": "月は東から出て西に沈む", "C": "月は地球の周りを回っている", "D": "地球は太陽の周りを回っている"}, "a": "BC", "multi": true}, {"q": "理科離れの原因としてあてはまらないものは、つぎのうちどれか。", "choices": {"A": "実験や観察が十分行えないこと", "B": "天動説的な内容に学習が偏っていること", "C": "実験や観察が不可能なものは教えないこと", "D": "自分の知識と学習内容の整合性が取れないこと"}, "a": "CD", "multi": true}, {"q": "文中で述べられていることと合致するものは、つぎのうちどれか。", "choices": {"A": "日本ではこれまで科学を主体的に生活に取り入れてきた", "B": "理科離れ防止のためには観察・実験主義を排斥すべきである", "C": "地動説にもとづいた宇宙観や科学的世界観を育成するべきである", "D": "現在の小学生は太陽が地球のまわりを回っていると教えられている"}, "a": "B", "multi": false}]}, {"num": 10, "passage": "江戸の都市は、中心性や対称性などをもたない渦巻き型をしていました。人口の増加に対応可能な都市の形をもつ江戸は、幕末には120万の人口をもつ大都市になり、武家と町人のゾーンが隣接した活気あふれる街となっていました。明治に入ると江戸の庭園は公園となり、西洋風の街並みや都市計画と従来の木造建築の混在する時期が続きました。関東大震災後、一時的に都市の美観への関心が高まりましたが、戦争による破壊を経て、その後の高度経済成長の時代には合理性や経済性が優先され、古都における歴史的風土特別保存地区や伝統的建造物群保存地区の規定を除けば、［ ］への関心が低い時代が続きました。1980年頃から、各地で高層マンション建設に関する紛争が起き、2004年にいわゆる景観法が制定されました。景観法では、国、自治体、事業者、住民が良好な景観を形成するための責務を規定しており、自治体が景観計画を定め、対象となる建築行為や色彩変更などに拘束力をもつ勧告や変更命令を出すことができるようになっています。", "questions": [{"q": "［ ］に入る言葉は？", "choices": {"A": "景観", "B": "建築", "C": "都市", "D": "歴史"}, "a": "A", "multi": false}, {"q": "文中で述べられていることと合致するものは？", "choices": {"A": "江戸の都市は人工の増加に対応可能な渦巻き型をしていた", "B": "明治時代になると都市には西洋風の街並みが現れた", "C": "関東大震災後、次第に都市の美観への関心は高まっていった", "D": "高度経済成長の時代の都市計画は合理性や経済性が優先された"}, "a": "ABD", "multi": true}]}];
+
+const COMPOUND_SPI_CHOICES = [
+  '似た意味', '反対の意味', '前の漢字が後の漢字を修飾',
+  '動詞の後に目的語', '主語と述語'
+];
+const COMPOUND_TC_CHOICES = [
+  '似た意味', '反対の意味', '前の漢字が後の漢字を修飾',
+  '動詞の後に目的語', '主語と述語', 'どれにもあてはまらない'
+];
+</script>
+<script>
+/* ==========================================================================
+ * Firebase Account Sync — fill in firebaseConfig to enable cloud sync.
+ * If left empty, the app falls back to local-only mode (current behavior).
+ * Setup:
+ *   1. Create a Firebase project at https://console.firebase.google.com
+ *   2. Add a Web App, copy the firebaseConfig object below
+ *   3. Enable Authentication > Sign-in methods: Google, Email/Password
+ *   4. Create Firestore database (production mode)
+ *   5. Add this security rule:
+ *      match /users/{uid} {
+ *        allow read, write: if request.auth != null && request.auth.uid == uid;
+ *      }
+ *   6. Add your hosting domain to Authentication > Settings > Authorized domains
+ * ========================================================================== */
+const firebaseConfig = {
+  // PASTE YOUR FIREBASE CONFIG HERE — leave object empty for local-only mode
+  // Example shape:
+  // apiKey: "AIza...",
+  // authDomain: "your-project.firebaseapp.com",
+  // projectId: "your-project",
+  // storageBucket: "your-project.appspot.com",
+  // messagingSenderId: "...",
+  // appId: "..."
+  
+  apiKey: "AIzaSyAogDO6vzDvNRHXdYmLxB8qpPl4ZYATmbE",
+  authDomain: "spi-lang-quiz.firebaseapp.com",
+  projectId: "spi-lang-quiz",
+  storageBucket: "spi-lang-quiz.firebasestorage.app",
+  messagingSenderId: "367439966505",
+  appId: "1:367439966505:web:8a52c1d41c1cef5c2a8738",
+  measurementId: "G-TK4HCFB3P0"
+};
+
+let fbApp = null, fbAuth = null, fbDb = null;
+let currentUser = null;
+let firestoreUnsub = null;
+let saveDebounceTimer = null;
+let lastSyncStatus = 'idle'; // idle, syncing, ok, error
+let firebaseEnabled = false;
+
+if (firebaseConfig && firebaseConfig.apiKey) {
+  try {
+    fbApp = firebase.initializeApp(firebaseConfig);
+    fbAuth = firebase.auth();
+    fbDb = firebase.firestore();
+    // Enable offline persistence — works as cache when offline
+    fbDb.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+    firebaseEnabled = true;
+  } catch (e) {
+    console.warn('Firebase init failed:', e);
+    firebaseEnabled = false;
+  }
+}
+
+function setSyncStatus(s) {
+  lastSyncStatus = s;
+  const dot = document.querySelector('.sync-dot');
+  if (dot) dot.className = 'sync-dot ' + (s === 'syncing' ? 'syncing' : s === 'error' ? 'error' : '');
+}
+
+/* Merge local stats with cloud stats — union for sets, max for counters */
+function mergeStats(local, cloud) {
+  if (!cloud) return local;
+  if (!local) return cloud;
+  const merged = {
+    total: Math.max(local.total || 0, cloud.total || 0),
+    correct: Math.max(local.correct || 0, cloud.correct || 0),
+    perCat: {}, mistakes: {}, seen: {},
+  };
+  const cats = new Set([...Object.keys(local.perCat || {}), ...Object.keys(cloud.perCat || {})]);
+  cats.forEach(c => {
+    const lp = (local.perCat || {})[c] || { attempts: 0, correct: 0 };
+    const cp = (cloud.perCat || {})[c] || { attempts: 0, correct: 0 };
+    merged.perCat[c] = {
+      attempts: Math.max(lp.attempts, cp.attempts),
+      correct: Math.max(lp.correct, cp.correct),
+    };
+  });
+  const mcats = new Set([...Object.keys(local.mistakes || {}), ...Object.keys(cloud.mistakes || {})]);
+  mcats.forEach(c => {
+    const lm = (local.mistakes || {})[c] || [];
+    const cm = (cloud.mistakes || {})[c] || [];
+    const seenIds = new Set();
+    merged.mistakes[c] = [];
+    [...cm, ...lm].forEach(m => {
+      if (!seenIds.has(m.id)) {
+        seenIds.add(m.id);
+        merged.mistakes[c].push(m);
+      }
+    });
+  });
+  const scats = new Set([...Object.keys(local.seen || {}), ...Object.keys(cloud.seen || {})]);
+  scats.forEach(c => {
+    const ls = (local.seen || {})[c] || {};
+    const cs = (cloud.seen || {})[c] || {};
+    merged.seen[c] = { ...cs, ...ls };
+    // For each id, keep the larger timestamp
+    Object.keys(merged.seen[c]).forEach(id => {
+      merged.seen[c][id] = Math.max(ls[id] || 0, cs[id] || 0);
+    });
+  });
+  return merged;
+}
+
+/* === Auth state handling === */
+if (firebaseEnabled && fbAuth) {
+  fbAuth.onAuthStateChanged(async (user) => {
+    currentUser = user;
+    updateAuthUI();
+    if (user) {
+      // Pull cloud data, merge with local, push merged version
+      setSyncStatus('syncing');
+      try {
+        const docRef = fbDb.collection('users').doc(user.uid);
+        const snap = await docRef.get();
+        const cloudData = snap.exists ? snap.data() : null;
+        const localData = JSON.parse(localStorage.getItem('spi-app-stats-v2') || 'null');
+        const merged = mergeStats(localData, cloudData);
+        localStorage.setItem('spi-app-stats-v2', JSON.stringify(merged));
+        await docRef.set(merged, { merge: false });
+        setSyncStatus('ok');
+        // Real-time sync: changes from other devices appear here
+        if (firestoreUnsub) firestoreUnsub();
+        firestoreUnsub = docRef.onSnapshot((ds) => {
+          if (!ds.exists) return;
+          const remote = ds.data();
+          const local = JSON.parse(localStorage.getItem('spi-app-stats-v2') || 'null');
+          // Only update if remote is genuinely different (avoid feedback loop)
+          if (JSON.stringify(remote) !== JSON.stringify(local)) {
+            const m = mergeStats(local, remote);
+            localStorage.setItem('spi-app-stats-v2', JSON.stringify(m));
+            // Re-render if currently on home or list view
+            try {
+              const home = document.getElementById('view-home');
+              if (home && home.style.display !== 'none') renderHome();
+              const list = document.getElementById('tab-list');
+              if (list && list.classList.contains('active')) renderListItems();
+              updateHeaderStats();
+            } catch (e) {}
+          }
+        }, () => setSyncStatus('error'));
+      } catch (e) {
+        console.warn('Cloud sync failed:', e);
+        setSyncStatus('error');
+      }
+    } else {
+      if (firestoreUnsub) { firestoreUnsub(); firestoreUnsub = null; }
+      setSyncStatus('idle');
+    }
+  });
+}
+
+/* Push current stats to Firestore (debounced) */
+function pushStatsToCloud() {
+  if (!currentUser || !fbDb) return;
+  clearTimeout(saveDebounceTimer);
+  saveDebounceTimer = setTimeout(async () => {
+    setSyncStatus('syncing');
+    try {
+      const stats = JSON.parse(localStorage.getItem('spi-app-stats-v2') || 'null');
+      if (!stats) { setSyncStatus('ok'); return; }
+      await fbDb.collection('users').doc(currentUser.uid).set(stats, { merge: false });
+      setSyncStatus('ok');
+    } catch (e) {
+      console.warn('Cloud write failed:', e);
+      setSyncStatus('error');
+    }
+  }, 1500);
+}
+
+function updateAuthUI() {
+  const area = document.getElementById('auth-area');
+  if (!area) return;
+  if (!firebaseEnabled) {
+    area.innerHTML = '';
+    return;
+  }
+  area.innerHTML = '';
+  if (currentUser) {
+    const displayId = currentUser.displayName || (currentUser.email || '').split('@')[0] || '?';
+    const initial = displayId[0].toUpperCase();
+    const wrap = document.createElement('div');
+    wrap.className = 'auth-user';
+    wrap.innerHTML = `
+      <div class="user-avatar" title="${displayId}">${initial}</div>
+      <span class="sync-dot ${lastSyncStatus === 'syncing' ? 'syncing' : lastSyncStatus === 'error' ? 'error' : ''}" title="同期状況"></span>
+    `;
+    wrap.querySelector('.user-avatar').onclick = () => openAuthModal();
+    area.appendChild(wrap);
+  } else {
+    const btn = document.createElement('button');
+    btn.className = 'auth-btn';
+    btn.id = 'signin-btn';
+    btn.textContent = 'サインイン';
+    btn.onclick = () => openAuthModal();
+    area.appendChild(btn);
+  }
+}
+
+function openAuthModal() {
+  const modal = document.getElementById('auth-modal');
+  const body = document.getElementById('auth-modal-body');
+  if (!modal || !body) return;
+  if (!firebaseEnabled) {
+    body.innerHTML = '<p class="auth-desc">アカウント機能を使うには、HTMLファイル内の <code>firebaseConfig</code> に Firebase の設定情報を貼り付けてください。詳細は付属の手順書を参照。</p>';
+  } else if (currentUser) {
+    const displayId = currentUser.displayName || (currentUser.email || '').split('@')[0] || '';
+    body.innerHTML = `
+      <div class="signed-in-info">
+        <div class="signed-email">${displayId}</div>
+        <div class="signed-sub">cloud sync: ${lastSyncStatus === 'ok' ? '✓ 同期済み' : lastSyncStatus === 'syncing' ? '同期中...' : lastSyncStatus === 'error' ? '⚠ エラー' : '—'}</div>
+      </div>
+      <button class="signout-btn" id="do-signout">ログアウト</button>
+    `;
+    document.getElementById('do-signout').onclick = async () => {
+      await fbAuth.signOut();
+      closeAuthModal();
+    };
+  } else {
+    // Reset form to default
+    body.innerHTML = `
+      <p class="auth-desc">アカウントを作成すると、PCとスマホで進捗が同期されます。</p>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-auth-mode="signin">ログイン</button>
+        <button class="auth-tab" data-auth-mode="signup">新規登録</button>
+      </div>
+      <input type="text" class="auth-input" id="auth-userid" placeholder="ユーザーID(英数字・アンダースコア)" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
+      <input type="password" class="auth-input" id="auth-password" placeholder="パスワード(6文字以上)" autocomplete="current-password">
+      <button class="auth-submit primary" id="auth-submit-btn">ログイン</button>
+      <p class="auth-warn" id="auth-warn" style="display:none;">⚠ パスワードを忘れた場合、復旧できません。必ず控えてください。</p>
+      <div class="auth-error" id="auth-error" style="display:none;"></div>
+    `;
+    bindAuthHandlers();
+  }
+  modal.style.display = 'flex';
+}
+
+function closeAuthModal() {
+  const modal = document.getElementById('auth-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function showAuthError(msg) {
+  const err = document.getElementById('auth-error');
+  if (err) { err.textContent = msg; err.style.display = 'block'; }
+}
+
+function translateAuthError(code, mode) {
+  const map = {
+    'auth/invalid-email': 'ユーザーIDの形式が正しくありません',
+    'auth/user-not-found': 'このユーザーIDは登録されていません',
+    'auth/wrong-password': 'パスワードが違います',
+    'auth/email-already-in-use': 'このユーザーIDは既に使われています',
+    'auth/weak-password': 'パスワードが弱すぎます(6文字以上)',
+    'auth/network-request-failed': 'ネットワークエラー — 接続を確認してください',
+    'auth/operation-not-allowed': 'この認証方法が有効化されていません(Firebaseコンソールで設定が必要)',
+    'auth/invalid-credential': 'ユーザーIDまたはパスワードが違います',
+    'auth/too-many-requests': '試行回数が多すぎます。しばらく待ってからお試しください',
+  };
+  return map[code] || ('エラー: ' + code);
+}
+
+function isMobile() {
+  return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+}
+
+/* Username → Firebase-internal pseudo-email mapping.
+   Firebase Auth requires email format, so we attach a dummy domain that's
+   never actually delivered to. Users only ever see/type the userid portion. */
+const PSEUDO_EMAIL_DOMAIN = 'spi-lang.local';
+const USERID_REGEX = /^[a-zA-Z0-9_.-]{3,30}$/;
+function userIdToEmail(uid) {
+  return `${uid.toLowerCase()}@${PSEUDO_EMAIL_DOMAIN}`;
+}
+
+function bindAuthHandlers() {
+  let mode = 'signin';
+  const tabs = document.querySelectorAll('.auth-tab');
+  const submitBtn = document.getElementById('auth-submit-btn');
+  const pwInput = document.getElementById('auth-password');
+  const warnEl = document.getElementById('auth-warn');
+  function setMode(m) {
+    mode = m;
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.authMode === m));
+    if (submitBtn) submitBtn.textContent = m === 'signin' ? 'ログイン' : 'アカウント作成';
+    if (pwInput) pwInput.autocomplete = m === 'signin' ? 'current-password' : 'new-password';
+    if (warnEl) warnEl.style.display = m === 'signup' ? 'block' : 'none';
+    // Clear any prior error/status
+    const err = document.getElementById('auth-error');
+    if (err) err.style.display = 'none';
+  }
+  tabs.forEach(t => t.onclick = () => setMode(t.dataset.authMode));
+
+  if (submitBtn) {
+    submitBtn.onclick = async () => {
+      const uid = (document.getElementById('auth-userid').value || '').trim();
+      const pass = document.getElementById('auth-password').value || '';
+      if (!uid || !pass) { showAuthError('ユーザーIDとパスワードを入力してください'); return; }
+      if (!USERID_REGEX.test(uid)) {
+        showAuthError('ユーザーIDは英数字・アンダースコア・ピリオド・ハイフンで3〜30文字');
+        return;
+      }
+      if (mode === 'signup' && pass.length < 6) { showAuthError('パスワードは6文字以上にしてください'); return; }
+      submitBtn.disabled = true;
+      const origText = submitBtn.textContent;
+      submitBtn.textContent = '通信中...';
+      const pseudoEmail = userIdToEmail(uid);
+      try {
+        if (mode === 'signin') {
+          await fbAuth.signInWithEmailAndPassword(pseudoEmail, pass);
+        } else {
+          const cred = await fbAuth.createUserWithEmailAndPassword(pseudoEmail, pass);
+          // Set the displayName to the chosen userid so the avatar shows the user-friendly ID
+          if (cred && cred.user) {
+            await cred.user.updateProfile({ displayName: uid });
+          }
+        }
+        closeAuthModal();
+      } catch (e) {
+        showAuthError(translateAuthError(e.code || 'unknown', mode));
+        submitBtn.disabled = false;
+        submitBtn.textContent = origText;
+      }
+    };
+  }
+}
+
+// Close modal handlers
+window.addEventListener('DOMContentLoaded', () => {
+  const closeBtn = document.getElementById('auth-modal-close');
+  const overlay = document.getElementById('auth-modal');
+  if (closeBtn) closeBtn.onclick = closeAuthModal;
+  if (overlay) {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeAuthModal();
+    });
+  }
+  updateAuthUI();
+  // Bind initial form handlers (for the inline form already in HTML)
+  if (firebaseEnabled) bindAuthHandlers();
+});
+
+/* === 9 CATEGORIES === */
+
+/* Flatten LONG_PASSAGES into question-units (each is a quiz item with passage attached) */
+const LONG_QUESTIONS = [];
+LONG_PASSAGES.forEach(p => {
+  p.questions.forEach((q, qi) => {
+    LONG_QUESTIONS.push({
+      passage: p.passage,
+      passageNum: p.num,
+      qIdx: qi,
+      q: q.q,
+      choices: q.choices,
+      a: q.a,
+      multi: q.multi
+    });
+  });
+});
+
+const CATEGORIES = [
+  { id: 'compound-spi', name: '熟語の成り立ち', format: 'SPI · 5択', desc: '二字熟語の構成を5択から選択。SPI最頻出',
+    problems: SPI_COMPOUNDS, kind: 'compound', choices: COMPOUND_SPI_CHOICES, group: 1 },
+  { id: 'compound-tc', name: '熟語の成り立ち', format: 'TC · 6択', desc: '5択+「どれにもあてはまらない」の6択',
+    problems: TC_COMPOUNDS, kind: 'compound', choices: COMPOUND_TC_CHOICES, group: 1 },
+  { id: 'meaning', name: '語句の意味', format: 'TC · 多択', desc: '意味の説明に当てはまる語句を選ぶ',
+    problems: MEANINGS, kind: 'meaning', group: 1 },
+  { id: 'usage', name: '語句の用法', format: 'TC · 多択', desc: '同じ用法で使われている例文を選ぶ',
+    problems: USAGES, kind: 'usage', group: 1 },
+  { id: 'fillin-tc', name: '空欄補充', format: 'TC · 多択', desc: '本文の（　）に入る語句を選ぶ',
+    problems: FILLINS_TC, kind: 'fillin-tc', group: 2 },
+  { id: 'fillin-spi', name: '空欄補充', format: 'SPI · 多択', desc: '本文の□□□に入る語句を選ぶ',
+    problems: FILLINS_SPI, kind: 'fillin-spi', group: 2 },
+  { id: 'order-tc', name: '文の並べ替え', format: 'TC · 5択', desc: '指定位置に当てはまる文を選ぶ',
+    problems: ORDERINGS_TC, kind: 'order-tc', group: 2 },
+  { id: 'order-spi', name: '文の並べ替え', format: 'SPI · 5択', desc: '指定位置に当てはまる文を選ぶ',
+    problems: ORDERINGS_SPI, kind: 'order-spi', group: 2 },
+  { id: 'long', name: '長文読解', format: 'TC · 多択', desc: '長文を読んで設問に答える(複数選択あり)',
+    problems: LONG_QUESTIONS, kind: 'long', group: 2 },
+];
+const CAT_BY_ID = Object.fromEntries(CATEGORIES.map(c => [c.id, c]));
+
+/* === STORAGE === */
+const memStore = {};
+const Store = {
+  get(k) { try { const v = localStorage.getItem(k); return v !== null ? JSON.parse(v) : null; }
+    catch { return memStore[k] !== undefined ? memStore[k] : null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { memStore[k] = v; } }
+};
+
+function loadStats() {
+  const s = Store.get('spi-app-stats-v2') || {
+    total: 0, correct: 0,
+    perCat: {}, mistakes: {},
+  };
+  if (!s.seen) s.seen = {};  // backfill for old data
+  return s;
+}
+function saveStats(s) { Store.set('spi-app-stats-v2', s); pushStatsToCloud(); }
+function recordAnswer(catId, problemId, isCorrect) {
+  const s = loadStats();
+  s.total++;
+  if (isCorrect) s.correct++;
+  if (!s.perCat[catId]) s.perCat[catId] = { attempts: 0, correct: 0 };
+  s.perCat[catId].attempts++;
+  if (isCorrect) s.perCat[catId].correct++;
+  if (!s.mistakes[catId]) s.mistakes[catId] = [];
+  const idx = s.mistakes[catId].findIndex(m => m.id === problemId);
+  if (!isCorrect) {
+    if (idx === -1) s.mistakes[catId].push({ id: problemId, ts: Date.now() });
+  } else if (idx !== -1) {
+    s.mistakes[catId].splice(idx, 1);
+  }
+  // Track seen — every answered problem gets recorded
+  if (!s.seen[catId]) s.seen[catId] = {};
+  s.seen[catId][problemId] = Date.now();
+  saveStats(s);
+}
+
+/* === STATE === */
+const state = {
+  view: 'home',
+  category: null,
+  tab: 'random',
+  questionCount: 10,
+  questions: [], qIdx: 0,
+  picked: null, pickedMulti: new Set(),
+  answered: false,
+  numCorrect: 0, numWrong: 0,
+  mistakeList: [],
+  startTime: 0, qStartTime: 0, qTimes: [],
+  isReviewMode: false,
+  listSearch: '', listFilter: 'all', listStatusFilter: 'all',
+  _timerHandle: null,
+};
+
+/* === UTILS === */
+function shuffle(a) {
+  const r = a.slice();
+  for (let i = r.length-1; i>0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [r[i], r[j]] = [r[j], r[i]];
+  }
+  return r;
+}
+function fmtTime(ms) { const s = Math.max(0, Math.floor(ms/1000)); return `${Math.floor(s/60)}:${(s%60).toString().padStart(2,'0')}`; }
+function fmtSec(ms) { return (Math.max(0,ms)/1000).toFixed(1) + 's'; }
+function el(tag, attrs, ...children) {
+  const e = document.createElement(tag);
+  if (attrs) for (const k in attrs) {
+    if (k === 'class') e.className = attrs[k];
+    else if (k === 'html') e.innerHTML = attrs[k];
+    else if (k.startsWith('on') && typeof attrs[k] === 'function') e.addEventListener(k.slice(2), attrs[k]);
+    else if (attrs[k] !== false && attrs[k] !== null && attrs[k] !== undefined) e.setAttribute(k, attrs[k]);
+  }
+  for (const c of children) {
+    if (c == null) continue;
+    if (typeof c === 'string' || typeof c === 'number') e.appendChild(document.createTextNode(c));
+    else e.appendChild(c);
+  }
+  return e;
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+function problemId(cat, p) {
+  if (cat.kind === 'compound') return cat.id + ':' + p.w;
+  if (cat.kind === 'long') return cat.id + ':' + p.passageNum + ':' + p.qIdx;
+  if (cat.kind === 'order-tc' || cat.kind === 'order-spi') return cat.id + ':' + (p.num || p.q.slice(0,30));
+  if (cat.kind === 'fillin-tc') return cat.id + ':' + (p.num || p.q.slice(0,30));
+  return cat.id + ':' + p.q.slice(0, 50);
+}
+
+/* === HOME === */
+function renderHome() {
+  document.getElementById('view-home').style.display = 'block';
+  document.getElementById('view-quiz').classList.remove('active');
+  document.getElementById('view-results').classList.remove('active');
+  renderCategories();
+  renderHeaderStats();
+  state.view = 'home';
+}
+function renderHeaderStats() {
+  const s = loadStats();
+  document.getElementById('total-attempted').textContent = s.total;
+  document.getElementById('overall-acc').textContent = s.total > 0 ? Math.round(s.correct / s.total * 100) + '%' : '—';
+}
+function renderCategories() {
+  const g1 = document.getElementById('cat-grid-1');
+  const g2 = document.getElementById('cat-grid-2');
+  g1.innerHTML = ''; g2.innerHTML = '';
+  const stats = loadStats();
+  CATEGORIES.forEach((cat, idx) => {
+    const ps = stats.perCat[cat.id] || { attempts: 0, correct: 0 };
+    const acc = ps.attempts > 0 ? Math.round(ps.correct/ps.attempts*100) : null;
+    const seenIds = stats.seen[cat.id] || {};
+    const seenCount = Object.keys(seenIds).length;
+    const total = cat.problems.length;
+    const seenPct = total > 0 ? Math.round(seenCount/total*100) : 0;
+    const card = el('button', { class: 'cat-card', onclick: () => selectCategory(cat) },
+      el('div', { class: 'cat-num' }, String(idx+1).padStart(2, '0')),
+      el('div', { class: 'cat-name' }, cat.name),
+      el('div', { class: 'cat-format' }, cat.format),
+      el('div', { class: 'cat-desc' }, cat.desc),
+      el('div', { class: 'cat-progress-bar' },
+        el('div', { class: 'cat-progress-fill', style: `width: ${seenPct}%` })
+      ),
+      el('div', { class: 'cat-meta' },
+        el('div', { class: 'cat-count' }, `${seenCount} / ${total} 問`),
+        el('div', { class: 'cat-accuracy' + (acc !== null ? ' has-data' : '') },
+          acc !== null ? `${acc}% 正答` : '未挑戦')
+      )
+    );
+    (cat.group === 1 ? g1 : g2).appendChild(card);
+  });
+}
+
+function selectCategory(cat) {
+  state.category = cat;
+  state.tab = 'random';
+  const panel = document.getElementById('mode-panel');
+  panel.classList.add('active');
+  document.getElementById('mode-title').textContent = `${cat.name} — ${cat.format}`;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === 'random'));
+  document.querySelectorAll('.mode-content > div').forEach(d => d.classList.toggle('active', d.id === 'tab-random'));
+  const stats = loadStats();
+  const mistakes = stats.mistakes[cat.id] || [];
+  const badge = document.getElementById('review-badge');
+  if (mistakes.length > 0) {
+    badge.textContent = mistakes.length;
+    badge.style.display = 'inline-block';
+  } else badge.style.display = 'none';
+  renderListMode();
+  renderReviewMode();
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+document.getElementById('mode-back').onclick = () => {
+  document.getElementById('mode-panel').classList.remove('active');
+  state.category = null;
+};
+document.querySelectorAll('.mode-tab').forEach(t => {
+  t.onclick = () => {
+    state.tab = t.dataset.tab;
+    document.querySelectorAll('.mode-tab').forEach(x => x.classList.toggle('active', x === t));
+    document.querySelectorAll('.mode-content > div').forEach(d => d.classList.toggle('active', d.id === 'tab-' + t.dataset.tab));
+    if (t.dataset.tab === 'list') renderListMode();
+    if (t.dataset.tab === 'review') renderReviewMode();
+  };
+});
+document.querySelectorAll('.count-btn').forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll('.count-btn').forEach(x => x.classList.toggle('active', x === b));
+    state.questionCount = b.dataset.count === 'all' ? 'all' : parseInt(b.dataset.count);
+  };
+});
+document.getElementById('start-random').onclick = () => {
+  if (!state.category) return;
+  const all = state.category.problems;
+  const n = state.questionCount === 'all' ? all.length : Math.min(state.questionCount, all.length);
+  startQuiz(shuffle(all).slice(0, n), false);
+};
+
+/* === LIST === */
+function renderListMode() {
+  const cat = state.category;
+  if (!cat) return;
+  const filter = document.getElementById('list-filter');
+  filter.innerHTML = '';
+  filter.appendChild(el('option', { value: 'all' }, 'すべて'));
+  if (cat.kind === 'compound') {
+    cat.choices.forEach(c => filter.appendChild(el('option', { value: c }, c)));
+  }
+  filter.style.display = cat.kind === 'compound' ? 'inline-block' : 'none';
+  filter.value = state.listFilter;
+  filter.onchange = () => { state.listFilter = filter.value; renderListItems(); };
+  const statusFilter = document.getElementById('list-status-filter');
+  statusFilter.value = state.listStatusFilter;
+  statusFilter.onchange = () => { state.listStatusFilter = statusFilter.value; renderListItems(); };
+  const search = document.getElementById('list-search');
+  search.value = state.listSearch;
+  search.placeholder = cat.kind === 'compound' ? '熟語で検索...' : '問題文で検索...';
+  search.oninput = () => { state.listSearch = search.value.trim(); renderListItems(); };
+  renderListItems();
+}
+function renderListItems() {
+  const cat = state.category;
+  if (!cat) return;
+  const stats = loadStats();
+  const mistakeIds = new Set((stats.mistakes[cat.id] || []).map(m => m.id));
+  const seenIds = stats.seen[cat.id] || {};
+  let items = cat.problems.slice();
+  if (state.listSearch) {
+    const q = state.listSearch.toLowerCase();
+    items = items.filter(p => {
+      if (cat.kind === 'compound') return p.w.includes(state.listSearch);
+      if (cat.kind === 'long') return (p.q + ' ' + p.passage).toLowerCase().includes(q);
+      return p.q.toLowerCase().includes(q);
+    });
+  }
+  if (state.listFilter !== 'all' && cat.kind === 'compound') {
+    items = items.filter(p => p.a === state.listFilter);
+  }
+  // Status filter
+  if (state.listStatusFilter !== 'all') {
+    items = items.filter(p => {
+      const pid = problemId(cat, p);
+      const isSeen = pid in seenIds;
+      const isMistake = mistakeIds.has(pid);
+      if (state.listStatusFilter === 'unseen') return !isSeen;
+      if (state.listStatusFilter === 'seen') return isSeen;
+      if (state.listStatusFilter === 'mistake') return isMistake;
+      return true;
+    });
+  }
+  // Stats summary in meta line
+  const totalSeen = cat.problems.filter(p => problemId(cat, p) in seenIds).length;
+  document.getElementById('list-meta').textContent =
+    `${items.length} / ${cat.problems.length} 問 表示中 (既出: ${totalSeen}, 誤答中: ${mistakeIds.size})`;
+  const container = document.getElementById('list-items');
+  container.innerHTML = '';
+  if (items.length === 0) {
+    container.appendChild(el('div', { class: 'empty' },
+      el('div', { class: 'empty-icon' }, '※'),
+      el('div', { class: 'empty-text' }, '該当する問題が見つかりません')));
+    return;
+  }
+  const SHOW_MAX = 300;
+  items.slice(0, SHOW_MAX).forEach(p => {
+    const pid = problemId(cat, p);
+    const isMistake = mistakeIds.has(pid);
+    const isSeen = pid in seenIds;
+    let left, right;
+    if (cat.kind === 'compound') {
+      left = el('div', { class: 'list-item-word' }, p.w);
+      right = el('div', { class: 'list-item-cls' }, p.a);
+    } else if (cat.kind === 'long') {
+      left = el('div', { class: 'list-item-q' }, `[長文${p.passageNum}] ${p.q.slice(0,60)}`);
+      right = el('div', { class: 'list-item-cls' }, `→ ${p.a}`);
+    } else {
+      left = el('div', { class: 'list-item-q' }, p.q.slice(0, 80));
+      right = el('div', { class: 'list-item-cls' }, `→ ${typeof p.a === 'string' ? p.a : ''}`);
+    }
+    // Status badge: mistake takes priority, then seen, else nothing
+    let statusBadge = null;
+    if (isMistake) {
+      statusBadge = el('div', { class: 'list-item-status mistake' }, '誤');
+    } else if (isSeen) {
+      statusBadge = el('div', { class: 'list-item-status seen' }, '済');
+    }
+    const item = el('div', { class: 'list-item' + (isSeen && !isMistake ? ' is-seen' : '') + (isMistake ? ' is-mistake' : ''),
+      onclick: () => startQuiz([p], false) },
+      left,
+      el('div', { style: 'display:flex; align-items:center; gap:8px;' },
+        right,
+        statusBadge
+      )
+    );
+    container.appendChild(item);
+  });
+  if (items.length > SHOW_MAX) {
+    container.appendChild(el('div', { class: 'empty', style: 'padding: 18px;' },
+      el('div', { class: 'empty-text' }, `（あと${items.length - SHOW_MAX}問は検索で絞り込んでください）`)));
+  }
+}
+
+/* === REVIEW === */
+function renderReviewMode() {
+  const cat = state.category;
+  if (!cat) return;
+  const stats = loadStats();
+  const mistakes = stats.mistakes[cat.id] || [];
+  const content = document.getElementById('review-content');
+  content.innerHTML = '';
+  if (mistakes.length === 0) {
+    content.appendChild(el('div', { class: 'empty' },
+      el('div', { class: 'empty-icon' }, '○'),
+      el('div', { class: 'empty-text' },
+        'このカテゴリで間違えた問題はまだありません。', el('br'),
+        'ランダム演習で誤答すると、ここに溜まります。')));
+    return;
+  }
+  const problemMap = new Map();
+  cat.problems.forEach(p => problemMap.set(problemId(cat, p), p));
+  const reviewProblems = mistakes.map(m => problemMap.get(m.id)).filter(Boolean);
+  content.appendChild(el('div', { class: 'random-controls' },
+    el('div', { style: 'color: var(--ink-soft); font-size: 13px; line-height: 1.7;' },
+      el('strong', { style: 'color: var(--accent-2);' }, `${reviewProblems.length}問 `),
+      'の誤答がたまっています。正解するたびリストから自動的に外れます。'),
+    el('button', {
+      class: 'primary-btn',
+      onclick: () => startQuiz(shuffle(reviewProblems), true)
+    }, '復習を開始 ', el('span', { class: 'arr' }, '→'))
+  ));
+}
+
+/* === QUIZ === */
+function startQuiz(questions, isReview) {
+  if (questions.length === 0) return;
+  // For order-spi/order-tc: re-pick a random position each time (so list items repeated don't trivially match)
+  // We just preserve original answer position for now since data has it baked in
+  state.questions = questions;
+  state.qIdx = 0;
+  state.picked = null;
+  state.pickedMulti = new Set();
+  state.answered = false;
+  state.numCorrect = 0;
+  state.numWrong = 0;
+  state.mistakeList = [];
+  state.qTimes = [];
+  state.startTime = Date.now();
+  state.qStartTime = Date.now();
+  state.isReviewMode = isReview;
+  document.getElementById('view-home').style.display = 'none';
+  document.getElementById('view-results').classList.remove('active');
+  document.getElementById('view-quiz').classList.add('active');
+  document.getElementById('quiz-total').textContent = questions.length;
+  startTimer();
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function startTimer() {
+  if (state._timerHandle) clearInterval(state._timerHandle);
+  state._timerHandle = setInterval(() => {
+    if (state.view !== 'quiz') return;
+    document.getElementById('quiz-total-time').textContent = fmtTime(Date.now() - state.startTime);
+    document.getElementById('quiz-cur-time').textContent = fmtSec(Date.now() - state.qStartTime);
+  }, 100);
+}
+function stopTimer() { if (state._timerHandle) { clearInterval(state._timerHandle); state._timerHandle = null; } }
+
+/* === BUILD A QUESTION RENDER ===
+ * Returns: { instruction, mainEl, options[{letter, text, isAns}], correctLetters: Set/String, multi: bool, passage: optional }
+ */
+function buildQuestion(p) {
+  const cat = state.category;
+  const letters = ['A','B','C','D','E','F'];
+
+  if (cat.kind === 'compound') {
+    const shuffled = shuffle(cat.choices);
+    const options = shuffled.map((c, i) => ({ letter: letters[i], text: c, isAns: c === p.a }));
+    return {
+      instruction: '次の二字熟語の構成として、最も適切なものを1つ選びなさい。',
+      mainHTML: `<div class="q-compound-word">${escapeHtml(p.w)}</div>`,
+      options, correctLetters: new Set([options.find(o => o.isAns).letter]),
+      multi: false
+    };
+  }
+
+  if (cat.kind === 'meaning' || cat.kind === 'usage') {
+    const entries = Object.entries(p.choices);
+    const shuffled = shuffle(entries);
+    const options = shuffled.map((entry, i) => ({
+      letter: letters[i], text: entry[1], isAns: entry[0] === p.a
+    }));
+    return {
+      instruction: cat.kind === 'meaning'
+        ? '次の意味の説明に最も当てはまる語句を1つ選びなさい。'
+        : '次に示す語句と同じ用法のものを選択肢の中から1つ選びなさい。',
+      mainHTML: `<div class="q-text-body">${escapeHtml(p.q)}</div>`,
+      options, correctLetters: new Set([options.find(o => o.isAns).letter]),
+      multi: false
+    };
+  }
+
+  if (cat.kind === 'fillin-tc') {
+    // Body has answer letter visible like （　C　） - mask it
+    let body = p.q;
+    body = body.replace(/[（(][　\s]*[A-F①②][　\s]*[）)]/g, '（　？　）');
+    // Options shuffle
+    const entries = Object.entries(p.choices);
+    const shuffled = shuffle(entries);
+    const options = shuffled.map((entry, i) => ({
+      letter: letters[i], text: entry[1], isAns: entry[0] === p.a
+    }));
+    return {
+      instruction: '本文の（　）に当てはまる語句を選びなさい。',
+      mainHTML: `<div class="q-text-body">${escapeHtml(body)}</div>`,
+      options, correctLetters: new Set([options.find(o => o.isAns).letter]),
+      multi: false
+    };
+  }
+
+  if (cat.kind === 'fillin-spi') {
+    // Body has □□□ already as blank
+    const entries = Object.entries(p.choices);
+    const shuffled = shuffle(entries);
+    const options = shuffled.map((entry, i) => ({
+      letter: letters[i], text: entry[1], isAns: entry[0] === p.a
+    }));
+    return {
+      instruction: '本文の□□□に当てはまる語句を選びなさい。',
+      mainHTML: `<div class="q-text-body">${escapeHtml(p.q)}</div>`,
+      options, correctLetters: new Set([options.find(o => o.isAns).letter]),
+      multi: false
+    };
+  }
+
+  if (cat.kind === 'order-tc') {
+    // Body has (1)(2)(3)(4)(5) - render position markers, highlight target ans_pos
+    const ansPos = p.ans_pos;
+    let html = escapeHtml(p.q);
+    // Replace (N) markers with styled position
+    html = html.replace(/[（(](\d)[）)]/g, (m, n) => {
+      const isTarget = parseInt(n) === ansPos;
+      return `<span class="pos ${isTarget ? 'target' : ''}">${n}</span>`;
+    });
+    const entries = Object.entries(p.choices);
+    const shuffled = shuffle(entries);
+    const options = shuffled.map((entry, i) => ({
+      letter: letters[i], text: entry[1], isAns: entry[0] === p.a, origLetter: entry[0]
+    }));
+    // Build correct-order sentence text: for each position 1..N, the choice text is p.choices[order[pos-1]]
+    const orderedFragments = [...p.order].map(ch => p.choices[ch]).filter(Boolean);
+    return {
+      instruction: `5つの選択肢を並べ替えて意味の通る文を作るとき、位置 (${ansPos}) に入るものを選びなさい。`,
+      mainHTML: `<div class="q-text-body">${html}</div>`,
+      options, correctLetters: new Set([options.find(o => o.isAns).letter]),
+      multi: false,
+      extraInfo: { order: p.order, orderedFragments }
+    };
+  }
+
+  if (cat.kind === 'order-spi') {
+    // Body has inline digit sequence like "15243"
+    // Pick a random target position 1-5
+    const ansPos = 1 + Math.floor(Math.random() * 5);  // random position
+    const order = p.order;  // "15243" - digit at index N is the order to place choice N+1
+    // For SPI format, "order" is the sequence (e.g., "15243") meaning
+    // the 1st position gets choice "1", 2nd position gets choice "5", etc.
+    // So at position ansPos (1-based), the choice is order[ansPos-1]
+    const correctChoiceNum = parseInt(order[ansPos - 1]);
+    // Render body: replace digit sequence with position markers
+    let html = escapeHtml(p.q);
+    // The digit sequence appears as e.g. "15243" inline; replace with (1)(2)(3)(4)(5)
+    html = html.replace(/(\d{5})/, (m) => {
+      // Make sure it's the order
+      if (new Set(m).size === 5 && [...m].every(c => '12345'.includes(c))) {
+        return '(1)(2)(3)(4)(5)';
+      }
+      return m;
+    });
+    html = html.replace(/\((\d)\)/g, (m, n) => {
+      const isTarget = parseInt(n) === ansPos;
+      return `<span class="pos ${isTarget ? 'target' : ''}">${n}</span>`;
+    });
+    // Choices are 1-5 numbered
+    const entries = Object.entries(p.choices).map(([k,v]) => [parseInt(k), v]);
+    const shuffled = shuffle(entries);
+    const options = shuffled.map((entry, i) => ({
+      letter: letters[i], text: entry[1], isAns: entry[0] === correctChoiceNum, origNum: entry[0]
+    }));
+    // Build correct-order sentence text: for each position 1..N, the choice text is p.choices[order[pos-1]]
+    const orderedFragments = [...p.order].map(ch => p.choices[ch]).filter(Boolean);
+    return {
+      instruction: `本文中の5つの数字を並べ替えて意味の通る文を作るとき、位置 (${ansPos}) に入るものを選びなさい。`,
+      mainHTML: `<div class="q-text-body">${html}</div>`,
+      options, correctLetters: new Set([options.find(o => o.isAns).letter]),
+      multi: false,
+      extraInfo: { order: p.order, ansPos, orderedFragments }
+    };
+  }
+
+  if (cat.kind === 'long') {
+    // Passage above, then question with choices
+    const entries = Object.entries(p.choices);
+    const shuffled = shuffle(entries);
+    const options = shuffled.map((entry, i) => ({
+      letter: letters[i], text: entry[1],
+      isAns: p.a.includes(entry[0]),
+      origLetter: entry[0]
+    }));
+    const correctSet = new Set(options.filter(o => o.isAns).map(o => o.letter));
+    return {
+      instruction: p.multi
+        ? '長文を読み、当てはまるものをすべて選びなさい。(複数選択)'
+        : '長文を読み、当てはまるものを1つ選びなさい。',
+      mainHTML: `<div class="q-text-body" style="font-size:14px; max-height:280px; overflow-y:auto;">${escapeHtml(p.passage)}</div>
+                 <div style="margin: 14px 0 6px; font-size: 13px; color: var(--ink); font-weight: 600;">${escapeHtml(p.q)}</div>`,
+      options, correctLetters: correctSet,
+      multi: p.multi
+    };
+  }
+
+  return null;
+}
+
+function renderQuestion() {
+  state.view = 'quiz';
+  const p = state.questions[state.qIdx];
+  const cat = state.category;
+  state.picked = null;
+  state.pickedMulti = new Set();
+  state.answered = false;
+  state.qStartTime = Date.now();
+
+  document.getElementById('quiz-pos').textContent = state.qIdx + 1;
+  document.getElementById('quiz-correct').textContent = state.numCorrect;
+  document.getElementById('quiz-wrong').textContent = state.numWrong;
+  document.getElementById('progress-fill').style.width = Math.round((state.qIdx / state.questions.length) * 100) + '%';
+
+  const built = buildQuestion(p);
+  state._builtQ = built;
+
+  const card = document.getElementById('question-card');
+  card.innerHTML = '';
+  // Check if this problem has been seen before
+  const pid = problemId(cat, p);
+  const stats = loadStats();
+  const seenIds = stats.seen[cat.id] || {};
+  const mistakeIds = new Set((stats.mistakes[cat.id] || []).map(m => m.id));
+  const isSeen = pid in seenIds;
+  const isMistake = mistakeIds.has(pid);
+
+  const numLine = el('div', { class: 'question-num-line' },
+    el('div', { class: 'question-num' }, `問 ${state.qIdx + 1}`),
+    isMistake
+      ? el('div', { class: 'seen-badge mistake' }, '誤答中')
+      : (isSeen ? el('div', { class: 'seen-badge seen' }, '既出') : null)
+  );
+  card.appendChild(numLine);
+  card.appendChild(el('div', { class: 'question-instruction' }, built.instruction));
+  const mainContainer = el('div');
+  mainContainer.innerHTML = built.mainHTML;
+  card.appendChild(mainContainer);
+
+  if (built.multi) {
+    card.appendChild(el('div', { class: 'multi-hint' }, '※ 複数選択可 — 解答ボタンで確定'));
+  }
+
+  const choicesDiv = el('div', { class: 'choices' });
+  built.options.forEach(o => {
+    const ch = el('button', { class: 'choice', 'data-letter': o.letter },
+      el('div', { class: 'choice-letter' }, o.letter),
+      el('div', { class: 'choice-text' }, o.text)
+    );
+    ch.onclick = () => onChoiceClick(o, built);
+    choicesDiv.appendChild(ch);
+  });
+  card.appendChild(choicesDiv);
+
+  card.appendChild(el('div', { class: 'feedback', id: 'feedback' }));
+
+  // Actions
+  const isLast = state.qIdx + 1 === state.questions.length;
+  const actions = el('div', { class: 'quiz-actions' },
+    el('div', { class: 'left' },
+      el('button', { class: 'action-btn danger', onclick: confirmAbort }, '中断')),
+    built.multi
+      ? el('button', { class: 'action-btn primary', id: 'submit-btn', disabled: true, onclick: submitMulti }, '解答する')
+      : el('button', { class: 'action-btn primary', id: 'next-btn', disabled: true, onclick: nextQuestion },
+        isLast ? '結果を見る' : '次の問題 →')
+  );
+  card.appendChild(actions);
+}
+
+function onChoiceClick(option, built) {
+  if (state.answered) return;
+  if (built.multi) {
+    // Toggle selection
+    if (state.pickedMulti.has(option.letter)) {
+      state.pickedMulti.delete(option.letter);
+    } else {
+      state.pickedMulti.add(option.letter);
+    }
+    // Update visuals
+    document.querySelectorAll('.choice').forEach(btn => {
+      btn.classList.toggle('selected', state.pickedMulti.has(btn.dataset.letter));
+    });
+    document.getElementById('submit-btn').disabled = state.pickedMulti.size === 0;
+  } else {
+    // Single answer
+    state.answered = true;
+    finalizeAnswer(new Set([option.letter]), built);
+  }
+}
+
+function submitMulti() {
+  if (state.answered) return;
+  if (state.pickedMulti.size === 0) return;
+  state.answered = true;
+  finalizeAnswer(state.pickedMulti, state._builtQ);
+}
+
+function finalizeAnswer(pickedSet, built) {
+  const elapsed = Date.now() - state.qStartTime;
+  state.qTimes.push(elapsed);
+  // Compare sets
+  const correctSet = built.correctLetters;
+  let isCorrect = (pickedSet.size === correctSet.size);
+  if (isCorrect) {
+    for (const x of pickedSet) if (!correctSet.has(x)) { isCorrect = false; break; }
+  }
+  if (isCorrect) state.numCorrect++; else state.numWrong++;
+
+  // Visual update
+  document.querySelectorAll('.choice').forEach(btn => {
+    const letter = btn.dataset.letter;
+    btn.disabled = true;
+    btn.classList.remove('selected');
+    if (correctSet.has(letter)) btn.classList.add('correct');
+    else if (pickedSet.has(letter)) btn.classList.add('incorrect');
+    else btn.classList.add('disabled-dim');
+  });
+
+  // Feedback
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback active ' + (isCorrect ? 'correct' : 'incorrect');
+  const correctText = built.options.filter(o => correctSet.has(o.letter))
+    .map(o => `<strong>${escapeHtml(o.text)}</strong>(${o.letter})`).join(' / ');
+  const pickedText = built.options.filter(o => pickedSet.has(o.letter))
+    .map(o => `${escapeHtml(o.text)}(${o.letter})`).join(' / ') || '（無選択）';
+  let bodyHTML;
+  if (isCorrect) {
+    bodyHTML = `${correctText} ／ ${fmtSec(elapsed)}で解答`;
+  } else {
+    bodyHTML = `あなた: ${pickedText}<br>正解: ${correctText} ／ ${fmtSec(elapsed)}`;
+  }
+  if (built.extraInfo && built.extraInfo.orderedFragments) {
+    // Show the correct order as actual sentence fragments with position markers
+    const fragHTML = built.extraInfo.orderedFragments.map((frag, i) => {
+      const isTarget = built.extraInfo.ansPos && (i + 1 === built.extraInfo.ansPos);
+      return `<div class="ord-frag${isTarget ? ' target' : ''}"><span class="ord-num">${i+1}</span>${escapeHtml(frag)}</div>`;
+    }).join('');
+    bodyHTML += `<div class="ord-display"><div class="ord-label">正しい並び順:</div>${fragHTML}</div>`;
+  } else if (built.extraInfo && built.extraInfo.order) {
+    bodyHTML += `<div class="ord-display">正しい並び: ${built.extraInfo.order}</div>`;
+  }
+  fb.innerHTML = `<div class="feedback-title">${isCorrect ? '正解' : '不正解'}</div><div class="feedback-body">${bodyHTML}</div>`;
+
+  // Record
+  const p = state.questions[state.qIdx];
+  const pid = problemId(state.category, p);
+  recordAnswer(state.category.id, pid, isCorrect);
+  if (!isCorrect) {
+    state.mistakeList.push({
+      problem: p, kind: state.category.kind,
+      pickedText: pickedText.replace(/<[^>]+>/g, ''),
+      correctText: built.options.filter(o => correctSet.has(o.letter)).map(o => o.text).join(' / ')
+    });
+  }
+  document.getElementById('quiz-correct').textContent = state.numCorrect;
+  document.getElementById('quiz-wrong').textContent = state.numWrong;
+
+  // Switch button to "next"
+  const isLast = state.qIdx + 1 === state.questions.length;
+  const existing = document.getElementById('submit-btn') || document.getElementById('next-btn');
+  if (existing) {
+    const newBtn = el('button', { class: 'action-btn primary', id: 'next-btn', onclick: nextQuestion },
+      isLast ? '結果を見る' : '次の問題 →');
+    existing.replaceWith(newBtn);
+  }
+}
+
+function nextQuestion() {
+  if (state.qIdx + 1 >= state.questions.length) {
+    showResults(false);
+  } else {
+    state.qIdx++;
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+function confirmAbort() {
+  if (state.numCorrect + state.numWrong === 0) {
+    if (confirm('まだ何も答えていません。ホームに戻りますか?')) {
+      stopTimer();
+      renderHome();
+    }
+    return;
+  }
+  if (confirm(`ここで中断して結果を見ますか? （これまでの${state.numCorrect + state.numWrong}問が集計されます）`)) {
+    showResults(true);
+  }
+}
+
+/* === RESULTS === */
+function showResults(aborted) {
+  state.view = 'results';
+  stopTimer();
+  document.getElementById('view-quiz').classList.remove('active');
+  document.getElementById('view-results').classList.add('active');
+  const total = state.numCorrect + state.numWrong;
+  const pct = total > 0 ? Math.round(state.numCorrect / total * 100) : 0;
+  const elapsed = Date.now() - state.startTime;
+  const avg = state.qTimes.length > 0 ? state.qTimes.reduce((a,b)=>a+b,0) / state.qTimes.length : 0;
+  const content = document.getElementById('results-content');
+  content.innerHTML = '';
+  content.appendChild(el('div', { class: 'results-header' },
+    el('div', { class: 'results-eyebrow' }, aborted ? '中断 — 途中集計' : '完了 — 集計結果'),
+    el('div', { class: 'results-score' },
+      String(state.numCorrect),
+      el('span', { class: 'denom' }, ' / ' + total)),
+    el('div', { class: 'results-pct' }, pct + '% CORRECT')
+  ));
+  content.appendChild(el('div', { class: 'results-stats' },
+    el('div', { class: 'result-stat' },
+      el('div', { class: 'result-stat-label' }, '正解'),
+      el('div', { class: 'result-stat-value green' }, String(state.numCorrect))),
+    el('div', { class: 'result-stat' },
+      el('div', { class: 'result-stat-label' }, '誤答'),
+      el('div', { class: 'result-stat-value red' }, String(state.numWrong))),
+    el('div', { class: 'result-stat' },
+      el('div', { class: 'result-stat-label' }, '合計時間'),
+      el('div', { class: 'result-stat-value' }, fmtTime(elapsed))),
+    el('div', { class: 'result-stat' },
+      el('div', { class: 'result-stat-label' }, '1問平均'),
+      el('div', { class: 'result-stat-value' }, fmtSec(avg)))
+  ));
+  if (state.mistakeList.length > 0) {
+    const ms = el('div', { class: 'mistakes-section' });
+    ms.appendChild(el('div', { class: 'mistakes-title' },
+      '間違えた問題', el('span', { class: 'count' }, `${state.mistakeList.length}問`)));
+    state.mistakeList.forEach(m => {
+      const card = el('div', { class: 'mistake-card' });
+      const p = m.problem;
+      if (m.kind === 'compound') {
+        card.appendChild(el('div', { class: 'mistake-q' },
+          el('span', { class: 'word' }, p.w),
+          '— 二字熟語の構成は?'));
+      } else if (m.kind === 'long') {
+        card.appendChild(el('div', { class: 'mistake-q' }, `[長文${p.passageNum}] ${p.q}`));
+      } else {
+        const preview = (p.q || '').slice(0, 100) + ((p.q || '').length > 100 ? '...' : '');
+        card.appendChild(el('div', { class: 'mistake-q' }, preview));
+      }
+      card.appendChild(el('div', { class: 'mistake-ans' },
+        'あなた: ', el('span', { class: 'your' }, m.pickedText),
+        '  ／  正解: ', el('span', { class: 'true' }, m.correctText)
+      ));
+      ms.appendChild(card);
+    });
+    content.appendChild(ms);
+  }
+  content.appendChild(el('div', { class: 'results-actions' },
+    state.mistakeList.length > 0
+      ? el('button', { class: 'primary-btn', onclick: () => {
+          const mProblems = state.mistakeList.map(m => m.problem);
+          startQuiz(shuffle(mProblems), true);
+        }}, '間違えた問題だけ再挑戦 →')
+      : null,
+    el('button', { class: 'action-btn', onclick: () => {
+        if (state.category) { renderHome(); selectCategory(state.category); }
+        else renderHome();
+      }}, 'カテゴリへ戻る'),
+    el('button', { class: 'action-btn', onclick: renderHome }, 'ホームへ')
+  ));
+}
+
+renderHome();
+</script>
+
+</body>
+</html>
